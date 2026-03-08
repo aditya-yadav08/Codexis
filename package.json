@@ -1,0 +1,9 @@
+{
+  "name": "codexis",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "workers"
+  ]
+}
