@@ -50,18 +50,18 @@ const worker = new Worker(
     console.log("Starting indexing:", owner, repo);
 
     // ✅ DELETE PREVIOUS CHUNKS
-    console.log("Deleting previous chunks...");
+    // console.log("Deleting previous chunks...");
 
-    const { error } = await supabase
-      .from("code_chunks")
-      .delete()
-      .eq("repo", repo);
+    // const { error } = await supabase
+    //   .from("code_chunks")
+    //   .delete()
+    //   .eq("repo", repo);
 
-    if (error) {
-      console.error("Delete failed:", error);
-    }
+    // if (error) {
+    //   console.error("Delete failed:", error);
+    // }
 
-    console.log("Previous chunks deleted.");
+    // console.log("Previous chunks deleted.");
 
     const response = await axios.get(
       `https://api.github.com/repos/${owner}/${repo}/git/trees/${job.data.branch}?recursive=1`,
@@ -104,7 +104,30 @@ const worker = new Worker(
 
     // LOOP THROUGH FILES
     for (const file of codeFiles) {
-      const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/${file.path}`;
+      // CHECK IF FILE CHANGED
+      const { data: existingFile } = await supabase
+        .from("code_chunks")
+        .select("file_sha")
+        .eq("owner", owner)
+        .eq("repo", repo)
+        .eq("file_path", file.path)
+        .limit(1)
+        .maybeSingle();
+
+      if (existingFile && existingFile.file_sha === file.sha) {
+        console.log("Skipping unchanged file:", file.path);
+        continue;
+      }
+
+      // DELETE OLD CHUNKS FOR THIS FILE
+      await supabase
+        .from("code_chunks")
+        .delete()
+        .eq("owner", owner)
+        .eq("repo", repo)
+        .eq("file_path", file.path);
+
+      const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${file.path}`;
 
       try {
         const fileResponse = await axios.get(rawUrl);
@@ -129,6 +152,7 @@ const worker = new Worker(
           owner,
           repo,
           file_path: file.path,
+          file_sha: file.sha,
           chunk,
         }));
 

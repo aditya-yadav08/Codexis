@@ -86,7 +86,7 @@ exports.indexRepo = async (request, reply) => {
       .eq("repo", repo)
       .maybeSingle();
 
-    console.log("Stored commit:", data?.last_commit_sha);
+    console.log("Stored commit:", data?.last_commit_sha || "none");
 
     // Skip indexing if repo unchanged
     if (data && data.last_commit_sha === latestCommit) {
@@ -99,14 +99,17 @@ exports.indexRepo = async (request, reply) => {
 
     console.log("Queueing repo indexing job...");
 
-    const jobId = `${owner}-${repo}`;
-
     const existingJob = await repoQueue.getJob(jobId);
+
+    if (existingJob && (await existingJob.isActive())) {
+      return {
+        message: "Indexing already in progress",
+      };
+    }
 
     if (existingJob) {
       await existingJob.remove();
     }
-
     await repoQueue.add(
       "index-repo",
       {
