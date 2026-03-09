@@ -1,31 +1,39 @@
-const auth = require("../../middleware/auth");
+const repoController = require("./repos.controller");
+const authMiddleware = require("../../middleware/auth");
 
 module.exports = async function (fastify) {
 
-  // Apply auth middleware to all routes in this module
-  fastify.addHook("preHandler", auth);
+  // Repos routes
+  fastify.get(
+    "/repos",
+    {
+      preHandler: authMiddleware,
+    },
+    repoController.getUserRepos,
+  );
 
-  // GET /repos
-  fastify.get("/", async (request, reply) => {
+  // Files routes
+  fastify.get(
+    "/repos/files",
+    {
+      preHandler: authMiddleware,
+    },
+    repoController.getRepoFiles,
+  );
 
-    return {
-      message: "Authorized request",
-      user: request.user,
-    };
+  // File content route
+  fastify.get(
+    "/repos/file",
+    {
+      preHandler: authMiddleware,
+    },
+    repoController.getFileContent,
+  );
 
-  });
-
-  // POST /repos/index
-  fastify.post("/index", async (request, reply) => {
-
-    const { repoUrl } = request.body;
-
-    return {
-      message: "Repo indexing started",
-      repo: repoUrl,
-      user: request.user,
-    };
-
-  });
-
+  // Indexing route
+  fastify.post(
+  "/repos/index",
+  { preHandler: authMiddleware },
+  repoController.indexRepo
+);
 };

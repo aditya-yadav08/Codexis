@@ -3,6 +3,7 @@ require("dotenv").config();
 const Fastify = require("fastify");
 const mercurius = require("mercurius");
 const cookie = require("@fastify/cookie");
+const cors = require("@fastify/cors");
 
 const authRoutes = require("../modules/auth/auth.routes");
 const repoRoutes = require("../modules/repos/repos.routes");
@@ -20,6 +21,11 @@ app.register(cookie, {
   secret: process.env.JWT_SECRET,
 });
 
+// Register CORS plugin
+app.register(cors, {
+  origin: "http://localhost:3000",
+  credentials: true
+});
 
 // GraphQL schema
 const schema = `
@@ -43,7 +49,8 @@ app.register(mercurius, {
 
 // Register routes
 app.register(authRoutes);
-app.register(repoRoutes, { prefix: "/repos" });
+app.register(repoRoutes);
+// app.register(repoRoutes, { prefix: "/repos" });
 
 
 // Global error handler

@@ -1,23 +1,23 @@
 const jwt = require("jsonwebtoken");
 
-module.exports = async function auth(request, reply) {
+module.exports = async function (request, reply) {
+
   const token = request.cookies.session;
 
   if (!token) {
-    return reply.code(401).send({
-      error: "Unauthorized",
-    });
+    return reply.code(401).send({ error: "Unauthorized" });
   }
 
   try {
-    const user = jwt.verify(token, process.env.JWT_SECRET);
 
-    // attach user to request
-    request.user = user;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-  } catch (error) {
-    return reply.code(401).send({
-      error: "Invalid session",
-    });
+    request.user = decoded;
+
+  } catch (err) {
+
+    return reply.code(401).send({ error: "Invalid token" });
+
   }
+
 };
