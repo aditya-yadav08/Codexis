@@ -8,7 +8,7 @@ const connection = require("../workers/src/lib/redis");
 const chunkCode = require("./src/utils/chunker");
 const supabase = require("../backend/src/lib/supabase");
 
-console.log("🚀 Repo Index Worker Started");
+console.log("🚀 Repo Index Worker Started 🚀 ");
 
 // Files we want to ignore completely (even if they are small)
 const ignoredFiles = [".gitignore", ".env.example", "README.md", "LICENSE"];
