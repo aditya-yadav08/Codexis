@@ -49,20 +49,6 @@ const worker = new Worker(
 
     console.log("Starting indexing:", owner, repo);
 
-    // ✅ DELETE PREVIOUS CHUNKS
-    // console.log("Deleting previous chunks...");
-
-    // const { error } = await supabase
-    //   .from("code_chunks")
-    //   .delete()
-    //   .eq("repo", repo);
-
-    // if (error) {
-    //   console.error("Delete failed:", error);
-    // }
-
-    // console.log("Previous chunks deleted.");
-
     const response = await axios.get(
       `https://api.github.com/repos/${owner}/${repo}/git/trees/${job.data.branch}?recursive=1`,
     );
@@ -156,7 +142,19 @@ const worker = new Worker(
           chunk,
         }));
 
-        await supabase.from("code_chunks").insert(rows);
+        const { data: insertedRows } = await supabase
+          .from("code_chunks")
+          .insert(rows)
+          .select();
+
+        const embedQueue = require("../backend/src/queues/embed.queue");
+
+        for (const row of insertedRows) {
+          await embedQueue.add("generate-embedding", {
+            id: row.id,
+            chunk: row.chunk,
+          });
+        }
 
         console.log("Saved chunks for:", file.path);
       } catch (error) {

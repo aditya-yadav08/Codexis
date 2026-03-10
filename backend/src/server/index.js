@@ -7,6 +7,7 @@ const cors = require("@fastify/cors");
 
 const authRoutes = require("../modules/auth/auth.routes");
 const repoRoutes = require("../modules/repos/repos.routes");
+const chatRoutes = require("../modules/chat/chat.routes");
 
 const app = Fastify({
   logger: {
@@ -24,7 +25,7 @@ app.register(cookie, {
 // Register CORS plugin
 app.register(cors, {
   origin: "http://localhost:3000",
-  credentials: true
+  credentials: true,
 });
 
 // GraphQL schema
@@ -46,41 +47,32 @@ app.register(mercurius, {
   graphiql: true,
 });
 
-
 // Register routes
 app.register(authRoutes);
 app.register(repoRoutes);
-// app.register(repoRoutes, { prefix: "/repos" });
+app.register(require("../modules/chat/chat.routes"), { prefix: "/api" });
 
+// app.register(repoRoutes, { prefix: "/repos" });
 
 // Global error handler
 app.setErrorHandler((error, request, reply) => {
-
   request.log.error(error);
 
   reply.code(500).send({
     error: "Internal Server Error",
   });
-
 });
-
 
 // Start server
 const start = async () => {
-
   try {
-
     await app.listen({ port: 4000 });
 
     app.log.info("🚀 Codexis backend running on http://localhost:4000");
-
   } catch (err) {
-
     app.log.error(err);
     process.exit(1);
-
   }
-
 };
 
 start();
