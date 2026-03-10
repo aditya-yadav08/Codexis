@@ -1,7 +1,5 @@
 const chatController = require("./chat.controller");
 
-async function chatRoutes(fastify) {
-  fastify.post("/chat/context", chatController.retrieveContext);
-}
-
-module.exports = chatRoutes;
+module.exports = async function (fastify) {
+  fastify.post("/chat/ask", chatController.askRepo);
+};

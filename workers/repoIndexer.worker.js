@@ -134,12 +134,14 @@ const worker = new Worker(
         console.log("Chunks created:", chunks.length);
 
         // SAVE EACH CHUNK
-        const rows = chunks.map((chunk) => ({
+        const rows = chunks.map((c) => ({
           owner,
           repo,
           file_path: file.path,
           file_sha: file.sha,
-          chunk,
+          chunk: c.chunk,
+          start_line: c.start_line,
+          end_line: c.end_line,
         }));
 
         const { data: insertedRows } = await supabase

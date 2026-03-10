@@ -1,8 +1,16 @@
-function chunkCode(code, size = 800) {
+function chunkCode(code, size = 20) {
+  const lines = code.split("\n");
+
   const chunks = [];
 
-  for (let i = 0; i < code.length; i += size) {
-    chunks.push(code.slice(i, i + size));
+  for (let i = 0; i < lines.length; i += size) {
+    const chunkLines = lines.slice(i, i + size);
+
+    chunks.push({
+      chunk: chunkLines.join("\n"),
+      start_line: i + 1,
+      end_line: i + chunkLines.length,
+    });
   }
 
   return chunks;

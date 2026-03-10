@@ -1,43 +1,48 @@
-const generateEmbedding = require("../ai/embedder");
+const embed = require("../ai/embedder");
+const generateAnswer = require("../ai/llm");
+const rewriteQuery = require("../ai/queryRewriter");
 const supabase = require("../../lib/supabase");
 
-exports.retrieveContext = async (request, reply) => {
+exports.askRepo = async (request, reply) => {
   try {
     const { question } = request.body;
 
-    if (!question) {
-      return reply.code(400).send({
-        error: "Question is required",
-      });
-    }
+    // Step 1 — Generate embedding
+    // const question = request.body.question;
 
-    console.log("Question:", question);
+    // rewrite query
+    const improvedQuery = await rewriteQuery(question);
 
-    // 1️⃣ Generate question embedding
-    const embedding = await generateEmbedding(question);
+    // embed improved query
+    const embedding = await embed(improvedQuery);
 
-    // 2️⃣ Vector search in Supabase
-    const { data, error } = await supabase.rpc("match_code_chunks", {
+    console.log("Original Query:", question);
+    console.log("Rewritten Query:", improvedQuery);
+
+    // Step 2 — Vector search
+    const { data: chunks } = await supabase.rpc("match_code_chunks", {
       query_embedding: embedding,
-      match_count: 5,
+      match_count: 4,
     });
 
-    if (error) throw error;
+    // Step 3 — Build context
+    const context = chunks.map((c) => c.chunk).join("\n\n");
 
-    console.log("Relevant chunks:", data.length);
+    // Step 4 - Sources of context (file and snippet)
+    const sources = chunks.map((c) => ({
+      file: c.file_path,
+      snippet: c.chunk.slice(0, 120),
+    }));
 
-    // 3️⃣ Build context
-    const context = data.map((chunk) => chunk.chunk).join("\n\n");
+    // Step 4 — Ask LLM
+    const answer = await generateAnswer(question, context);
 
     return {
-      context,
-      chunks: data,
+      answer,
+      sources,
     };
   } catch (error) {
     console.error(error);
-
-    return reply.code(500).send({
-      error: error.message,
-    });
+    reply.code(500).send({ error: error.message });
   }
 };
