@@ -7,9 +7,6 @@ exports.askRepo = async (request, reply) => {
   try {
     const { question } = request.body;
 
-    // Step 1 — Generate embedding
-    // const question = request.body.question;
-
     // rewrite query
     const improvedQuery = await rewriteQuery(question);
 
@@ -31,7 +28,9 @@ exports.askRepo = async (request, reply) => {
     // Step 4 - Sources of context (file and snippet)
     const sources = chunks.map((c) => ({
       file: c.file_path,
-      snippet: c.chunk.slice(0, 120),
+      start_line: c.start_line,
+      end_line: c.end_line,
+      snippet: c.chunk,
     }));
 
     // Step 4 — Ask LLM

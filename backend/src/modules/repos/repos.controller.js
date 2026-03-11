@@ -88,8 +88,15 @@ exports.indexRepo = async (request, reply) => {
 
     console.log("Stored commit:", data?.last_commit_sha);
 
-    // Skip indexing if repo unchanged
-    if (data && data.last_commit_sha === latestCommit) {
+    // check if chunks exist
+    const { count } = await supabase
+      .from("code_chunks")
+      .select("*", { count: "exact", head: true })
+      .eq("owner", owner)
+      .eq("repo", repo);
+
+    // skip only if commit same AND chunks exist
+    if (data && data.last_commit_sha === latestCommit && count > 0) {
       console.log("Skipping indexing - repo already up to date");
 
       return {
