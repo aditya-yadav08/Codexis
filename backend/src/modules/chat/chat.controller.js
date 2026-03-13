@@ -5,7 +5,7 @@ const supabase = require("../../lib/supabase");
 
 exports.askRepo = async (request, reply) => {
   try {
-    const { question } = request.body;
+    const { question, owner, repo } = request.body;
 
     // rewrite query
     const improvedQuery = await rewriteQuery(question);
@@ -17,10 +17,19 @@ exports.askRepo = async (request, reply) => {
     console.log("Rewritten Query:", improvedQuery);
 
     // Step 2 — Vector search
-    const { data: chunks } = await supabase.rpc("match_code_chunks", {
+    const { data: chunks, error } = await supabase.rpc("match_code_chunks", {
       query_embedding: embedding,
       match_count: 4,
+      p_owner: owner,
+      p_repo: repo,
     });
+
+    if (!chunks || chunks.length === 0) {
+      return {
+        answer: "I couldn't find relevant code in this repository.",
+        sources: [],
+      };
+    }
 
     // Step 3 — Build context
     const context = chunks.map((c) => c.chunk).join("\n\n");
