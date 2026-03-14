@@ -1,5 +1,3 @@
-const { Worker } = require("bullmq");
+require("./repo-indexer");
 
-const worker = new Worker("repo-index", async job => {
-  console.log("Processing repo:", job.data);
-});
+console.log("🛠️  All workers active! 🛠️");

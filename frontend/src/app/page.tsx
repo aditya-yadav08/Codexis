@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +12,9 @@ import {
   TrendingUp,
   Clock,
   Zap,
+  Loader2,
 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 function StatCard({
   title,
@@ -28,7 +31,6 @@ function StatCard({
 }) {
   return (
     <Card className="relative rounded-2xl border-white/8 bg-white/4 overflow-hidden group hover:border-white/15 transition-all duration-300 hover:-translate-y-0.5">
-      {/* Subtle glow blob */}
       <div
         className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${gradient} blur-2xl scale-150`}
       />
@@ -55,41 +57,85 @@ function StatCard({
   );
 }
 
-function ActivityItem({ index }: { index: number }) {
-  const labels = [
-    "Indexed src/api/auth.ts",
-    "Chat session started",
-    "Repository connected",
-    "56 files re-indexed",
-    "Settings updated",
-  ];
-  const times = ["2m ago", "14m ago", "1h ago", "3h ago", "Yesterday"];
-  const dots = [
-    "bg-indigo-400",
-    "bg-violet-400",
-    "bg-emerald-400",
-    "bg-amber-400",
-    "bg-muted-foreground",
-  ];
+function ActivityItem({ label, timestamp, status }: { label: string; timestamp: string; status: string }) {
+  const timeAgo = (date: string) => {
+    const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+    if (seconds < 60) return "Just now";
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return new Date(date).toLocaleDateString();
+  };
+
+  const getStatusColor = (s: string) => {
+    switch (s) {
+      case "completed": return "bg-emerald-400";
+      case "indexing": return "bg-indigo-400 animate-pulse";
+      case "failed": return "bg-rose-400";
+      default: return "bg-amber-400";
+    }
+  };
 
   return (
     <div className="flex items-center gap-3 rounded-xl px-3 py-2.5 bg-white/3 border border-white/6 hover:bg-white/5 transition-colors">
-      <span className={`size-2 rounded-full shrink-0 ${dots[index]}`} />
+      <span className={`size-2 rounded-full shrink-0 ${getStatusColor(status)}`} />
       <span className="text-sm text-foreground/85 flex-1 truncate">
-        {labels[index]}
+        {label}
       </span>
       <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-1">
         <Clock className="size-3" />
-        {times[index]}
+        {timeAgo(timestamp)}
       </span>
     </div>
   );
 }
 
 export default function Home() {
+  const [stats, setStats] = useState({ repos: "—", files: "—", questions: "—", responseTime: "—" });
+  const [activities, setActivities] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchDashboardData() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) return;
+
+        const headers = { Authorization: `Bearer ${session.access_token}` };
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+        const [statsRes, activityRes] = await Promise.all([
+          fetch(`${backendUrl}/stats/overview`, { headers }),
+          fetch(`${backendUrl}/stats/activity`, { headers })
+        ]);
+
+        if (statsRes.ok) {
+           const statsData = await statsRes.json();
+           setStats({
+             repos: statsData.repos.toString(),
+             files: statsData.files.toLocaleString(),
+             questions: statsData.questions.toString(),
+             responseTime: statsData.responseTime
+           });
+        }
+
+        if (activityRes.ok) {
+           const activityData = await activityRes.json();
+           setActivities(activityData);
+        }
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchDashboardData();
+  }, []);
+
   return (
     <div className="h-full min-h-0 space-y-8 animate-fade-up">
-      {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
@@ -112,41 +158,38 @@ export default function Home() {
         </Button>
       </div>
 
-      {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard
-          title="Repositories"
-          value="—"
-          subtext="Connected repos"
+          title="Indexed Repos"
+          value={stats.repos}
+          subtext="Successfully indexed"
           icon={GitBranch}
           gradient="bg-gradient-to-br from-indigo-500 to-indigo-600"
         />
         <StatCard
           title="Indexed files"
-          value="—"
+          value={stats.files}
           subtext="Available to chat"
           icon={Database}
           gradient="bg-gradient-to-br from-violet-500 to-violet-600"
         />
         <StatCard
           title="Questions"
-          value="—"
+          value={stats.questions}
           subtext="Asked in last 7 days"
           icon={MessageSquare}
           gradient="bg-gradient-to-br from-emerald-500 to-teal-600"
         />
         <StatCard
           title="Response time"
-          value="—"
+          value={stats.responseTime}
           subtext="Average (p50)"
           icon={Activity}
           gradient="bg-gradient-to-br from-amber-500 to-orange-600"
         />
       </div>
 
-      {/* Charts + Activity */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        {/* Usage chart */}
         <Card className="xl:col-span-2 rounded-2xl border-white/8 bg-white/4">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -158,7 +201,6 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <div className="relative h-52 rounded-xl border border-white/8 bg-background/50 overflow-hidden flex items-center justify-center">
-              {/* shimmer overlay */}
               <div className="absolute inset-0 animate-shimmer opacity-60" />
               <div className="flex flex-col items-center gap-2 text-muted-foreground">
                 <Activity className="size-8 opacity-30" />
@@ -168,15 +210,25 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        {/* Recent activity */}
         <Card className="rounded-2xl border-white/8 bg-white/4">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-semibold">Recent activity</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <ActivityItem key={i} index={i} />
-            ))}
+            {loading ? (
+               <div className="flex flex-col items-center justify-center py-10 gap-2 opacity-50">
+                  <Loader2 className="size-5 animate-spin text-indigo-400" />
+                  <span className="text-xs">Loading activity...</span>
+               </div>
+            ) : activities.length > 0 ? (
+              activities.map((act, i) => (
+                <ActivityItem key={i} label={act.label} timestamp={act.timestamp} status={act.status} />
+              ))
+            ) : (
+                <div className="text-center py-10 text-xs text-muted-foreground italic">
+                    No recent activity found.
+                </div>
+            )}
           </CardContent>
         </Card>
       </div>

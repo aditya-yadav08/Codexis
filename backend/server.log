@@ -1,0 +1,7 @@
+[dotenv@17.3.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+(node:45865) ExperimentalWarning: CommonJS module /Users/adityayadav/Developer/Projects/Personal/codexis/backend/src/modules/ai/embedder.js is loading ES Module /Users/adityayadav/Developer/Projects/Personal/codexis/node_modules/@xenova/transformers/src/transformers.js using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[23:57:13.464] INFO (45865): Server listening at http://127.0.0.1:4000
+[23:57:13.464] INFO (45865): Server listening at http://192.168.1.8:4000
+[23:57:13.464] INFO (45865): 🚀 Codexis backend running on http://localhost:4000

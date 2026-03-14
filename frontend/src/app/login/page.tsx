@@ -1,10 +1,18 @@
 "use client";
 
 import { Github, Zap, Code2, MessageSquare } from "lucide-react";
+import { Logo } from "@/components/ui/Logo";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
-  const login = () => {
-    window.location.href = "http://localhost:4000/auth/github";
+  const login = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+        scopes: "repo read:user",
+      },
+    });
   };
 
   return (
@@ -28,19 +36,15 @@ export default function LoginPage() {
 
       {/* Card */}
       <div className="relative z-10 mx-4 w-full max-w-sm animate-fade-up">
-        <div className="rounded-3xl border border-white/10 bg-white/6 backdrop-blur-2xl p-8 shadow-2xl shadow-black/40">
+        <div className="rounded-3xl border border-white/10 bg-white/6 backdrop-blur-2xl p-8 shadow-2xl shadow-black/40 flex flex-col items-center">
           {/* Logo */}
-          <div className="flex flex-col items-center gap-4 mb-8">
-            <div className="size-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-xl shadow-indigo-500/30">
-              <Zap className="size-7 text-white" strokeWidth={2.5} />
-            </div>
-            <div className="text-center">
-              <h1 className="text-2xl font-bold gradient-text">Codexis</h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                AI-powered code intelligence
-              </p>
-            </div>
+          <div className="flex flex-col items-center gap-4 mb-8 scale-125 origin-center">
+            <Logo />
           </div>
+          
+          <p className="text-sm text-muted-foreground mb-8 text-center -mt-2">
+            AI-powered code intelligence
+          </p>
 
           {/* Features */}
           <div className="space-y-2.5 mb-8">

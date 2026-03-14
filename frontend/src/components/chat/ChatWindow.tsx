@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import MessageBubble from "./MessageBubble";
 import { ArrowUp, Sparkles, Code2, GitBranch } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
 
 type Msg =
   | { role: "user"; content: string }
@@ -22,8 +23,8 @@ export default function ChatWindow({
   owner,
   repo,
 }: {
-  owner: string | null;
-  repo: string | null;
+  owner: string;
+  repo: string;
 }) {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [question, setQuestion] = useState("");
@@ -49,9 +50,15 @@ export default function ChatWindow({
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:4000/api/chat/ask", {
+      const { data: { session } } = await supabase.auth.getSession();
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+      
+      const res = await fetch(`${backendUrl}/api/chat/ask`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session?.access_token}`
+        },
         body: JSON.stringify({
           question: q,
           owner,

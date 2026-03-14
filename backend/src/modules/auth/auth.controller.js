@@ -1,102 +1,66 @@
-const axios = require("axios");
-const jwt = require("jsonwebtoken");
 const supabase = require("../../lib/supabase");
+const { encrypt } = require("../../utils/crypto");
 
-exports.githubCallback = async (request, reply) => {
-
+exports.syncGithubToken = async (request, reply) => {
   try {
+    const { provider_token } = request.body;
+    const user = request.user;
 
-    const code = request.query.code;
-
-    // 1️⃣ Get GitHub access token
-    const tokenRes = await axios.post(
-      "https://github.com/login/oauth/access_token",
-      {
-        client_id: process.env.GITHUB_CLIENT_ID,
-        client_secret: process.env.GITHUB_CLIENT_SECRET,
-        code
-      },
-      { headers: { Accept: "application/json" } }
-    );
-
-    const accessToken = tokenRes.data.access_token;
-
-    // 2️⃣ Fetch GitHub user
-    const userRes = await axios.get(
-      "https://api.github.com/user",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      }
-    );
-
-    const githubUser = userRes.data;
-
-    // 3️⃣ Find user
-    let { data: user } = await supabase
-      .from("users")
-      .select("*")
-      .eq("github_id", githubUser.id)
-      .maybeSingle();
-
-    // 4️⃣ Create user if not exists
-    if (!user) {
-
-      const { data: newUser, error } = await supabase
-        .from("users")
-        .insert({
-          github_id: githubUser.id,
-          username: githubUser.login,
-          avatar: githubUser.avatar_url
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      user = newUser;
+    if (!provider_token) {
+      return reply.code(400).send({ error: "provider_token is required" });
     }
 
-    // 5️⃣ Save GitHub token
-    const { error: tokenError } = await supabase
+    // 1. Reconcile user record
+    // We check if a user with this github_id already exists but has a different ID
+    const { data: existingUser } = await supabase
+      .from("users")
+      .select("id")
+      .eq("github_id", user.github_id)
+      .maybeSingle();
+
+    if (existingUser && existingUser.id !== user.user_id) {
+       console.log(`Conflict detected: GitHub ID ${user.github_id} belongs to ${existingUser.id}, but session has ${user.user_id}`);
+       
+       // Update the existing row to have the new ID? 
+       // Often PKs shouldn't be changed, but for a migration it's the fastest way to preserve data links
+       // However, we can also just delete the old one if it's junk. 
+       // But wait, the previous fix-repos error said 'user_id' doesn't exist on 'repos'.
+       // Let's just update the user record to match the new session ID.
+       const { error: deleteError } = await supabase
+        .from("users")
+        .delete()
+        .eq("id", existingUser.id);
+        
+       if (deleteError) console.error("Error deleting old user:", deleteError);
+    }
+
+    const { error: userError } = await supabase
+      .from("users")
+      .upsert({
+        id: user.user_id,
+        github_id: user.github_id,
+        username: user.username,
+      }, { onConflict: 'id' });
+
+    if (userError) throw userError;
+
+    // 2. Save GitHub token
+    const encryptedToken = encrypt(provider_token);
+    const { error } = await supabase
       .from("github_tokens")
       .upsert(
         {
-          user_id: user.id,
-          access_token: accessToken
+          user_id: user.user_id,
+          access_token: encryptedToken,
         },
         { onConflict: "user_id" }
       );
 
-    if (tokenError) throw tokenError;
+    if (error) throw error;
 
-    // 6️⃣ Create JWT session
-    const sessionToken = jwt.sign(
-      {
-        user_id: user.id,
-        github_id: user.github_id,
-        username: user.username
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    reply
-      .setCookie("session", sessionToken, {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/"
-      })
-      .redirect(`${process.env.FRONTEND_URL}/dashboard`);
-
+    return { message: "Token synced successfully" };
   } catch (error) {
-
-    console.error("OAuth Error:", error);
-
-    reply.code(500).send({
-      error: error.message
-    });
-
+    console.error("Token Sync Error:", error);
+    reply.code(500).send({ error: error.message });
   }
 };

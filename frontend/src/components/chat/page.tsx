@@ -3,5 +3,5 @@
 import ChatWindow from "@/components/chat/ChatWindow";
 
 export default function ChatPage() {
-  return <ChatWindow />;
+  return <ChatWindow owner="example" repo="example-repo" />;
 }

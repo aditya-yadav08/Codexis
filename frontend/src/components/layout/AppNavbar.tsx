@@ -3,12 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Menu, Search, Bell, Plus } from "lucide-react";
+import { useState } from "react";
+import ConnectRepoModal from "@/components/repos/ConnectRepoModal";
 
 export default function AppNavbar({
   onOpenSidebarMobile,
 }: {
   onOpenSidebarMobile?: () => void;
 }) {
+  const [openConnectModal, setOpenConnectModal] = useState(false);
+
   return (
     <header className="h-14 border-b border-white/8 glass flex items-center gap-3 px-4 md:px-6 shrink-0">
       {/* Mobile menu trigger */}
@@ -41,7 +45,8 @@ export default function AppNavbar({
       <div className="flex items-center gap-2">
         <Button
           size="sm"
-          className="hidden sm:inline-flex gap-1.5 h-8 px-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white border-0 hover:from-indigo-400 hover:to-violet-500 shadow-md shadow-indigo-500/20 text-xs font-semibold transition-all"
+          onClick={() => setOpenConnectModal(true)}
+          className="hidden sm:inline-flex gap-1.5 h-8 px-3 cursor-pointer rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white border-0 hover:from-indigo-400 hover:to-violet-500 shadow-md shadow-indigo-500/20 text-xs font-semibold transition-all"
         >
           <Plus className="size-3.5" />
           Connect Repo
@@ -51,7 +56,7 @@ export default function AppNavbar({
           type="button"
           variant="ghost"
           size="icon"
-          className="size-8 relative text-muted-foreground hover:text-foreground hover:bg-white/8 rounded-lg"
+          className="size-8 cursor-pointer relative text-muted-foreground hover:text-foreground hover:bg-white/8 rounded-lg"
           aria-label="Notifications"
         >
           <Bell className="size-4" />
@@ -63,6 +68,11 @@ export default function AppNavbar({
           U
         </div>
       </div>
+
+      <ConnectRepoModal
+        open={openConnectModal}
+        onClose={() => setOpenConnectModal(false)}
+      />
     </header>
   );
 }

@@ -2,10 +2,44 @@ const embed = require("../ai/embedder");
 const generateAnswer = require("../ai/llm");
 const rewriteQuery = require("../ai/queryRewriter");
 const supabase = require("../../lib/supabase");
+const redis = require("../../lib/redis");
+const crypto = require("crypto");
 
 exports.askRepo = async (request, reply) => {
   try {
     const { question, owner, repo } = request.body;
+    const userId = request.user.user_id;
+
+    // 0. Verify repository ownership
+    const { data: repoRecord, error: repoError } = await supabase
+      .from("repos")
+      .select("id")
+      .eq("owner", owner)
+      .eq("repo", repo)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (repoError) throw repoError;
+    if (!repoRecord) {
+      return reply.code(403).send({ error: "Forbidden: You do not have access to this repository" });
+    }
+
+    // 1. Check Cache
+    const queryHash = crypto.createHash("md5").update(question.trim().toLowerCase()).digest("hex");
+    const cacheKey = `chat_cache:${owner}:${repo}:${queryHash}`;
+    
+    // Increment question count for analytics
+    await redis.incr(`stats:questions:${userId}`).catch(e => console.error("Redis incr error:", e));
+
+    try {
+      const cachedResponse = await redis.get(cacheKey);
+      if (cachedResponse) {
+        console.log("Cache HIT for query:", question);
+        return JSON.parse(cachedResponse);
+      }
+    } catch (cacheErr) {
+      console.error("Redis cache read error:", cacheErr);
+    }
 
     // rewrite query
     const improvedQuery = await rewriteQuery(question);
@@ -24,6 +58,14 @@ exports.askRepo = async (request, reply) => {
       p_repo: repo,
     });
 
+    console.log(
+      "Retrieved chunks:",
+      chunks?.map((c) => ({
+        file: c.file_path,
+        start: c.start_line,
+      })),
+    );
+
     if (!chunks || chunks.length === 0) {
       return {
         answer: "I couldn't find relevant code in this repository.",
@@ -32,7 +74,17 @@ exports.askRepo = async (request, reply) => {
     }
 
     // Step 3 — Build context
-    const context = chunks.map((c) => c.chunk).join("\n\n");
+    const context = chunks
+      .map(
+        (c, i) => `
+          [Source ${i + 1}]
+          File: ${c.file_path}
+          Lines: ${c.start_line}-${c.end_line}
+
+    ${c.chunk}
+    `,
+      )
+      .join("\n");
 
     // Step 4 - Sources of context (file and snippet)
     const sources = chunks.map((c) => ({
@@ -45,10 +97,20 @@ exports.askRepo = async (request, reply) => {
     // Step 4 — Ask LLM
     const answer = await generateAnswer(question, context);
 
-    return {
+    const result = {
       answer,
       sources,
     };
+
+    // 2. Store in Cache
+    try {
+      await redis.set(cacheKey, JSON.stringify(result), "EX", 3600);
+      console.log("Cache MISS - Answer saved to Redis");
+    } catch (cacheErr) {
+      console.error("Redis cache write error:", cacheErr);
+    }
+
+    return result;
   } catch (error) {
     console.error(error);
     reply.code(500).send({ error: error.message });

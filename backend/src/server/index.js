@@ -8,6 +8,7 @@ const cors = require("@fastify/cors");
 const authRoutes = require("../modules/auth/auth.routes");
 const repoRoutes = require("../modules/repos/repos.routes");
 const chatRoutes = require("../modules/chat/chat.routes");
+const statsRoutes = require("../modules/stats/stats.routes");
 
 const app = Fastify({
   logger: {
@@ -24,8 +25,10 @@ app.register(cookie, {
 
 // Register CORS plugin
 app.register(cors, {
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
   credentials: true,
+  methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
 });
 
 // GraphQL schema
@@ -50,6 +53,7 @@ app.register(mercurius, {
 // Register routes
 app.register(authRoutes);
 app.register(repoRoutes);
+app.register(statsRoutes);
 app.register(require("../modules/chat/chat.routes"), { prefix: "/api" });
 
 // app.register(repoRoutes, { prefix: "/repos" });
@@ -66,7 +70,7 @@ app.setErrorHandler((error, request, reply) => {
 // Start server
 const start = async () => {
   try {
-    await app.listen({ port: 4000 });
+    await app.listen({ port: 4000, host: "0.0.0.0" });
 
     app.log.info("🚀 Codexis backend running on http://localhost:4000");
   } catch (err) {

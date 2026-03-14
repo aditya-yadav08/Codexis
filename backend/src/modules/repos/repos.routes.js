@@ -2,7 +2,6 @@ const repoController = require("./repos.controller");
 const authMiddleware = require("../../middleware/auth");
 
 module.exports = async function (fastify) {
-
   // Repos routes
   fastify.get(
     "/repos",
@@ -32,8 +31,20 @@ module.exports = async function (fastify) {
 
   // Indexing route
   fastify.post(
-  "/repos/index",
-  { preHandler: authMiddleware },
-  repoController.indexRepo
-);
+    "/repos/index",
+    { preHandler: authMiddleware },
+    repoController.indexRepo,
+  );
+
+  fastify.get(
+    "/repos/indexed",
+    { preHandler: authMiddleware },
+    repoController.getIndexedRepos,
+  );
+
+  fastify.delete(
+    "/repos/:owner/:repo",
+    { preHandler: authMiddleware },
+    repoController.deleteRepo,
+  );
 };

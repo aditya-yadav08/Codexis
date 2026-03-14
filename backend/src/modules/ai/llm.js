@@ -9,7 +9,7 @@ async function generateAnswer(question, context) {
   const completion = await client.chat.completions.create({
     model: "qwen/qwen-2.5-7b-instruct",
     temperature: 0.2,
-    max_tokens: 300,
+    max_tokens: 800,
     messages: [
       {
         role: "system",
@@ -27,6 +27,10 @@ async function generateAnswer(question, context) {
             3. Mention important functions or methods
             4. Explain why that code exists
             5. Avoid vague explanations
+            6. Only reference file paths that appear in the provided context.
+            7. Never invent file paths.
+            8. If the exact file path is not present, say "File path not found in retrieved context".
+            9. Base your answer strictly on the provided code snippets.
 
             Format your answer like this:
 
