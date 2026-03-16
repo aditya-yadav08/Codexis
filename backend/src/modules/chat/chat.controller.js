@@ -30,6 +30,10 @@ exports.askRepo = async (request, reply) => {
     
     // Increment question count for analytics
     await redis.incr(`stats:questions:${userId}`).catch(e => console.error("Redis incr error:", e));
+    
+    // Increment daily question count for chart
+    const today = new Date().toISOString().split('T')[0];
+    await redis.incr(`stats:questions:${userId}:${today}`).catch(e => console.error("Redis daily incr error:", e));
 
     try {
       const cachedResponse = await redis.get(cacheKey);

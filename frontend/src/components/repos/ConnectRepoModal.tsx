@@ -27,6 +27,10 @@ interface Repo {
   name: string;
   owner: { login: string };
   description?: string;
+  size: number;
+  archived: boolean;
+  disabled: boolean;
+  language?: string;
 }
 
 interface ConnectRepoModalProps {
@@ -44,6 +48,8 @@ export default function ConnectRepoModal({
   const [repos, setRepos] = useState<Repo[]>([]);
   const [existingRepos, setExistingRepos] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showOnlyMyRepos, setShowOnlyMyRepos] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [loadingRepo, setLoadingRepo] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [fetchingRepos, setFetchingRepos] = useState(false);
@@ -65,19 +71,23 @@ export default function ConnectRepoModal({
         data: { session },
       } = await supabase.auth.getSession();
       
-      // Fetch both GitHub repos and already indexed ones
-      const [ghReposRes, existingReposRes] = await Promise.all([
+      // Fetch GitHub repos, indexed ones, and current user info
+      const [ghReposRes, existingReposRes, settingsRes] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/repos`, {
           headers: { Authorization: `Bearer ${session?.access_token}` },
         }),
         fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/repos/indexed`, {
           headers: { Authorization: `Bearer ${session?.access_token}` },
+        }),
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/settings`, {
+          headers: { Authorization: `Bearer ${session?.access_token}` },
         })
       ]);
       
-      const [ghData, existingData] = await Promise.all([
+      const [ghData, existingData, settingsData] = await Promise.all([
         ghReposRes.json(),
-        existingReposRes.json()
+        existingReposRes.json(),
+        settingsRes.json()
       ]);
       
       if (!ghReposRes.ok) {
@@ -91,6 +101,7 @@ export default function ConnectRepoModal({
       
       setRepos(Array.isArray(ghData) ? ghData : []);
       setExistingRepos(Array.isArray(existingData) ? existingData : []);
+      setCurrentUser(settingsData);
     } catch (err) {
       console.error("Failed to fetch GitHub repos:", err);
       setErrorMsg("Network error. Please try again.");
@@ -109,11 +120,18 @@ export default function ConnectRepoModal({
       setIndexingTarget(null);
       setLoadingRepo(null);
       setErrorMsg(null);
+      setShowOnlyMyRepos(false);
       if (pollingIntervalRef.current) {
         clearInterval(pollingIntervalRef.current);
       }
     }
   }, [open]);
+
+  const [indexingProgress, setIndexingProgress] = useState({
+    processed: 0,
+    total: 0,
+    status: "pending"
+  });
 
   const pollIndexingStatus = (owner: string, repo: string) => {
     if (pollingIntervalRef.current) clearInterval(pollingIntervalRef.current);
@@ -124,21 +142,23 @@ export default function ConnectRepoModal({
           data: { session },
         } = await supabase.auth.getSession();
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/repos/indexed`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/repos/status?owner=${owner}&repo=${repo}`,
           {
             headers: {
               Authorization: `Bearer ${session?.access_token}`,
             },
           },
         );
-        const indexedRepos = await res.json();
+        const data = await res.json();
 
-        if (Array.isArray(indexedRepos)) {
-          const isDone = indexedRepos.some(
-            (r: any) => r.owner === owner && r.repo === repo,
-          );
+        if (data && !data.error) {
+          setIndexingProgress({
+            processed: data.processed_files || 0,
+            total: data.total_files || 0,
+            status: data.status
+          });
 
-          if (isDone) {
+          if (data.status === "completed") {
             if (pollingIntervalRef.current)
               clearInterval(pollingIntervalRef.current);
 
@@ -149,12 +169,18 @@ export default function ConnectRepoModal({
               onClose();
               router.push("/dashboard");
             }, 1000);
+          } else if (data.status === "failed") {
+            if (pollingIntervalRef.current)
+              clearInterval(pollingIntervalRef.current);
+            setIsIndexing(false);
+            setErrorMsg(data.indexing_error || "Indexing failed.");
+            toast.error("Indexing failed.");
           }
         }
       } catch (error) {
         console.error("Polling error:", error);
       }
-    }, 3000);
+    }, 2000);
   };
 
   const connectRepo = async (repo: Repo) => {
@@ -203,7 +229,14 @@ export default function ConnectRepoModal({
   };
 
   const filteredRepos = repos.filter((repo) => {
-    // Check if already indexed
+    // 1. Filter out unindexable repos
+    if (repo.size === 0 || repo.archived || repo.disabled) return false;
+
+    // 2. Filter by ownership if requested
+    const isOwner = repo.owner.login.toLowerCase() === currentUser?.username?.toLowerCase();
+    if (showOnlyMyRepos && !isOwner) return false;
+
+    // 3. Check if already indexed
     const isAlreadyConnected = existingRepos.some(
       (existing) => 
         existing.owner.toLowerCase() === repo.owner.login.toLowerCase() && 
@@ -212,7 +245,7 @@ export default function ConnectRepoModal({
 
     if (isAlreadyConnected) return false;
 
-    // Apply search filter
+    // 4. Apply search filter
     return (
       repo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       repo.owner.login.toLowerCase().includes(searchQuery.toLowerCase())
@@ -277,13 +310,33 @@ export default function ConnectRepoModal({
             </div>
 
             <div className="w-full max-w-xs space-y-3">
-              <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                <div className="h-full bg-indigo-500 animate-[shimmer_2s_infinite] w-full" />
-              </div>
-              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                <span>Worker Ready</span>
-                <span className="text-indigo-400">Indexing In Progress</span>
-              </div>
+              {indexingProgress.total > 0 ? (
+                <>
+                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                    <div 
+                      className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-500 ease-out" 
+                      style={{ width: `${Math.min(100, (indexingProgress.processed / indexingProgress.total) * 100)}%` }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider">
+                    <span className="text-muted-foreground/60">
+                      Processing {indexingProgress.processed} / {indexingProgress.total} files
+                    </span>
+                    <span className="text-indigo-400">
+                      {Math.round((indexingProgress.processed / indexingProgress.total) * 100)}%
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-full bg-indigo-500 animate-[shimmer_2s_infinite] w-full" />
+                  </div>
+                  <div className="flex items-center justify-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+                    Preparing indexing pipeline...
+                  </div>
+                </>
+              )}
             </div>
           </div>
         ) : (
@@ -303,8 +356,8 @@ export default function ConnectRepoModal({
               </div>
             )}
 
-            {/* Search */}
-            <div className="px-6 py-4 border-b border-white/8 bg-white/2">
+            {/* Search & Filter */}
+            <div className="px-6 py-4 border-b border-white/8 bg-white/2 space-y-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <Input
@@ -314,6 +367,29 @@ export default function ConnectRepoModal({
                   className="pl-10 h-10 rounded-xl bg-black/40 border-white/10 focus-visible:ring-indigo-500/50"
                   disabled={!!errorMsg && !repos.length}
                 />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+                  {filteredRepos.length} Repositories Available
+                </p>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
+                    My Repos Only
+                  </span>
+                  <button
+                    onClick={() => setShowOnlyMyRepos(!showOnlyMyRepos)}
+                    className={cn(
+                      "w-8 h-4.5 rounded-full transition-colors relative cursor-pointer",
+                      showOnlyMyRepos ? "bg-indigo-500" : "bg-white/10"
+                    )}
+                  >
+                    <div className={cn(
+                      "absolute top-0.5 size-3.5 rounded-full bg-white transition-all",
+                      showOnlyMyRepos ? "left-4" : "left-0.5"
+                    )} />
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -328,45 +404,56 @@ export default function ConnectRepoModal({
                 </div>
               ) : filteredRepos.length > 0 ? (
                 <div className="grid gap-2">
-                  {filteredRepos.map((repo) => (
-                    <button
-                      key={repo.id}
-                      onClick={() => connectRepo(repo)}
-                      disabled={!!loadingRepo}
-                      className={cn(
-                        "group w-full cursor-pointer text-left p-4 rounded-2xl border border-white/5 bg-white/2 hover:bg-white/5 hover:border-white/15 transition-all duration-200 flex items-center gap-4 relative overflow-hidden",
-                        loadingRepo === repo.id &&
-                          "bg-indigo-500/5 border-indigo-500/20",
-                      )}
-                    >
-                      <div className="size-10 rounded-xl bg-gradient-to-br from-indigo-500/10 to-violet-500/10 border border-white/10 flex items-center justify-center shrink-0 group-hover:from-indigo-500/20 group-hover:to-violet-500/20">
-                        <GitBranch className="size-5 text-indigo-400 group-hover:scale-110 transition-transform" />
-                      </div>
+                  {filteredRepos.map((repo) => {
+                    const isOwner = repo.owner.login.toLowerCase() === currentUser?.username?.toLowerCase();
+                    return (
+                      <button
+                        key={repo.id}
+                        onClick={() => connectRepo(repo)}
+                        disabled={!!loadingRepo}
+                        className={cn(
+                          "group w-full cursor-pointer text-left p-4 rounded-2xl border border-white/5 bg-white/2 hover:bg-white/5 hover:border-white/15 transition-all duration-200 flex items-center gap-4 relative overflow-hidden",
+                          loadingRepo === repo.id &&
+                            "bg-indigo-500/5 border-indigo-500/20",
+                        )}
+                      >
+                        <div className="size-10 rounded-xl bg-gradient-to-br from-indigo-500/10 to-violet-500/10 border border-white/10 flex items-center justify-center shrink-0 group-hover:from-indigo-500/20 group-hover:to-violet-500/20">
+                          <GitBranch className="size-5 text-indigo-400 group-hover:scale-110 transition-transform" />
+                        </div>
 
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-sm truncate">
-                            {repo.name}
-                          </span>
-                          {loadingRepo === repo.id && (
-                            <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full ring-1 ring-indigo-500/20">
-                              <Loader2 className="size-2.5 animate-spin" />
-                              Connecting
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-sm truncate">
+                              {repo.name}
                             </span>
-                          )}
+                            {loadingRepo === repo.id ? (
+                              <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full ring-1 ring-indigo-500/20">
+                                <Loader2 className="size-2.5 animate-spin" />
+                                Connecting
+                              </span>
+                            ) : isOwner ? (
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-400/80 bg-emerald-500/5 px-2 py-0.5 rounded-md border border-emerald-500/10">
+                                Owner
+                              </span>
+                            ) : (
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-indigo-400/80 bg-indigo-500/5 px-2 py-0.5 rounded-md border border-indigo-500/10">
+                                Collaborator
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
+                            <span>{repo.owner.login}</span>
+                          </div>
                         </div>
-                        <div className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5">
-                          <span>{repo.owner.login}</span>
+
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity pr-2">
+                          <Plus className="size-4 cursor-pointer text-indigo-400" />
                         </div>
-                      </div>
 
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity pr-2">
-                        <Plus className="size-4 cursor-pointer text-indigo-400" />
-                      </div>
-
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
-                    </button>
-                  ))}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
+                      </button>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">

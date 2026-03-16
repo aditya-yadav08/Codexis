@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +16,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { UsageChart } from "@/components/dashboard/UsageChart";
 
 function StatCard({
   title,
@@ -57,9 +59,19 @@ function StatCard({
   );
 }
 
-function ActivityItem({ label, timestamp, status }: { label: string; timestamp: string; status: string }) {
+function ActivityItem({
+  label,
+  timestamp,
+  status,
+}: {
+  label: string;
+  timestamp: string;
+  status: string;
+}) {
   const timeAgo = (date: string) => {
-    const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+    const seconds = Math.floor(
+      (new Date().getTime() - new Date(date).getTime()) / 1000,
+    );
     if (seconds < 60) return "Just now";
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m ago`;
@@ -70,16 +82,22 @@ function ActivityItem({ label, timestamp, status }: { label: string; timestamp: 
 
   const getStatusColor = (s: string) => {
     switch (s) {
-      case "completed": return "bg-emerald-400";
-      case "indexing": return "bg-indigo-400 animate-pulse";
-      case "failed": return "bg-rose-400";
-      default: return "bg-amber-400";
+      case "completed":
+        return "bg-emerald-400";
+      case "indexing":
+        return "bg-indigo-400 animate-pulse";
+      case "failed":
+        return "bg-rose-400";
+      default:
+        return "bg-amber-400";
     }
   };
 
   return (
     <div className="flex items-center gap-3 rounded-xl px-3 py-2.5 bg-white/3 border border-white/6 hover:bg-white/5 transition-colors">
-      <span className={`size-2 rounded-full shrink-0 ${getStatusColor(status)}`} />
+      <span
+        className={`size-2 rounded-full shrink-0 ${getStatusColor(status)}`}
+      />
       <span className="text-sm text-foreground/85 flex-1 truncate">
         {label}
       </span>
@@ -92,42 +110,59 @@ function ActivityItem({ label, timestamp, status }: { label: string; timestamp: 
 }
 
 export default function Home() {
-  const [stats, setStats] = useState({ repos: "—", files: "—", questions: "—", responseTime: "—" });
+  const router = useRouter();
+  const [stats, setStats] = useState({
+    repos: "—",
+    files: "—",
+    questions: "—",
+    responseTime: "—",
+  });
   const [activities, setActivities] = useState<any[]>([]);
+  const [usageData, setUsageData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingUsage, setLoadingUsage] = useState(true);
 
   useEffect(() => {
     async function fetchDashboardData() {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (!session) return;
 
         const headers = { Authorization: `Bearer ${session.access_token}` };
         const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-        const [statsRes, activityRes] = await Promise.all([
+        const [statsRes, activityRes, usageRes] = await Promise.all([
           fetch(`${backendUrl}/stats/overview`, { headers }),
-          fetch(`${backendUrl}/stats/activity`, { headers })
+          fetch(`${backendUrl}/stats/activity`, { headers }),
+          fetch(`${backendUrl}/stats/usage`, { headers }),
         ]);
 
         if (statsRes.ok) {
-           const statsData = await statsRes.json();
-           setStats({
-             repos: statsData.repos.toString(),
-             files: statsData.files.toLocaleString(),
-             questions: statsData.questions.toString(),
-             responseTime: statsData.responseTime
-           });
+          const statsData = await statsRes.json();
+          setStats({
+            repos: statsData.repos.toString(),
+            files: statsData.files.toLocaleString(),
+            questions: statsData.questions.toString(),
+            responseTime: statsData.responseTime,
+          });
         }
 
         if (activityRes.ok) {
-           const activityData = await activityRes.json();
-           setActivities(activityData);
+          const activityData = await activityRes.json();
+          setActivities(activityData);
+        }
+
+        if (usageRes.ok) {
+          const usageData = await usageRes.json();
+          setUsageData(usageData);
         }
       } catch (err) {
         console.error("Dashboard fetch error:", err);
       } finally {
         setLoading(false);
+        setLoadingUsage(false);
       }
     }
 
@@ -145,15 +180,17 @@ export default function Home() {
             <h1 className="text-xl font-bold tracking-tight">Overview</h1>
           </div>
           <p className="text-sm text-muted-foreground">
-            Monitor your repositories, indexing status, and AI usage at a glance.
+            Monitor your repositories, indexing status, and AI usage at a
+            glance.
           </p>
         </div>
 
         <Button
           variant="outline"
+          onClick={() => router.push("/dashboard")}
           className="rounded-xl border-white/10 bg-white/4 hover:bg-white/8 hover:border-white/20 gap-2 text-sm"
         >
-          View activity
+          View Repositories
           <ArrowUpRight className="size-3.5" />
         </Button>
       </div>
@@ -193,41 +230,59 @@ export default function Home() {
         <Card className="xl:col-span-2 rounded-2xl border-white/8 bg-white/4">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-semibold">Usage (coming soon)</CardTitle>
+              <CardTitle className="text-sm font-semibold">Usage</CardTitle>
               <span className="text-xs text-muted-foreground bg-white/6 border border-white/10 rounded-full px-2.5 py-0.5">
                 Last 7 days
               </span>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="relative h-52 rounded-xl border border-white/8 bg-background/50 overflow-hidden flex items-center justify-center">
-              <div className="absolute inset-0 animate-shimmer opacity-60" />
-              <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                <Activity className="size-8 opacity-30" />
-                <span className="text-sm">Chart coming soon</span>
-              </div>
+            <div className="relative h-52 w-full rounded-xl border border-white/8 bg-background/50 overflow-hidden flex items-center justify-center">
+              {loadingUsage ? (
+                <>
+                  <div className="absolute inset-0 animate-shimmer opacity-60" />
+                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                    <Loader2 className="size-8 animate-spin opacity-30" />
+                    <span className="text-sm">Loading usage data...</span>
+                  </div>
+                </>
+              ) : usageData.length > 0 ? (
+                <UsageChart data={usageData} />
+              ) : (
+                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                  <Activity className="size-8 opacity-30" />
+                  <span className="text-sm">No usage data found</span>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
 
         <Card className="rounded-2xl border-white/8 bg-white/4">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold">Recent activity</CardTitle>
+            <CardTitle className="text-sm font-semibold">
+              Recent activity
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {loading ? (
-               <div className="flex flex-col items-center justify-center py-10 gap-2 opacity-50">
-                  <Loader2 className="size-5 animate-spin text-indigo-400" />
-                  <span className="text-xs">Loading activity...</span>
-               </div>
+              <div className="flex flex-col items-center justify-center py-10 gap-2 opacity-50">
+                <Loader2 className="size-5 animate-spin text-indigo-400" />
+                <span className="text-xs">Loading activity...</span>
+              </div>
             ) : activities.length > 0 ? (
               activities.map((act, i) => (
-                <ActivityItem key={i} label={act.label} timestamp={act.timestamp} status={act.status} />
+                <ActivityItem
+                  key={i}
+                  label={act.label}
+                  timestamp={act.timestamp}
+                  status={act.status}
+                />
               ))
             ) : (
-                <div className="text-center py-10 text-xs text-muted-foreground italic">
-                    No recent activity found.
-                </div>
+              <div className="text-center py-10 text-xs text-muted-foreground italic">
+                No recent activity found.
+              </div>
             )}
           </CardContent>
         </Card>

@@ -42,6 +42,12 @@ module.exports = async function (fastify) {
     repoController.getIndexedRepos,
   );
 
+  fastify.get(
+    "/repos/status",
+    { preHandler: authMiddleware },
+    repoController.getRepoStatus,
+  );
+
   fastify.delete(
     "/repos/:owner/:repo",
     { preHandler: authMiddleware },

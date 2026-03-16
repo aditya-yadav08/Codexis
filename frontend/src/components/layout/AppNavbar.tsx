@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Menu, Search, Bell, Plus } from "lucide-react";
 import { useState } from "react";
 import ConnectRepoModal from "@/components/repos/ConnectRepoModal";
+import { UserMenu } from "./UserMenu";
 
 export default function AppNavbar({
   onOpenSidebarMobile,
@@ -64,9 +65,7 @@ export default function AppNavbar({
           <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-indigo-400 ring-1 ring-background" />
         </Button>
 
-        <div className="size-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-xs font-bold text-white cursor-pointer shadow">
-          U
-        </div>
+        <UserMenu />
       </div>
 
       <ConnectRepoModal

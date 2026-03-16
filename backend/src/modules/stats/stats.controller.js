@@ -101,3 +101,31 @@ exports.getRecentActivity = async (request, reply) => {
     reply.code(500).send({ error: error.message });
   }
 };
+
+exports.getUsageStats = async (request, reply) => {
+  try {
+    const userId = request.user.user_id;
+    const redis = require("../../lib/redis");
+    const usage = [];
+
+    // Get last 7 days including today
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      const displayDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      
+      const count = await redis.get(`stats:questions:${userId}:${dateStr}`).then(val => parseInt(val || 0)).catch(() => 0);
+      
+      usage.push({
+        date: displayDate,
+        count
+      });
+    }
+
+    return usage;
+  } catch (error) {
+    console.error("Usage Stats Error:", error);
+    reply.code(500).send({ error: error.message });
+  }
+};

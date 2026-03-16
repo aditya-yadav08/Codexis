@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { User } from "@supabase/supabase-js";
+import { useStore } from "@/store/useStore";
 
 interface AuthContextType {
   user: User | null;
@@ -14,11 +15,14 @@ const AuthContext = createContext<AuthContextType>({ user: null, loading: true }
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const { setUser: setZustandUser } = useStore();
 
   useEffect(() => {
     // 1. Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+      const u = session?.user ?? null;
+      setUser(u);
+      setZustandUser(u);
       if (session?.provider_token) {
         syncToken(session.provider_token);
       }
@@ -28,7 +32,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // 2. Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setUser(session?.user ?? null);
+        const u = session?.user ?? null;
+        setUser(u);
+        setZustandUser(u);
         if (session?.provider_token) {
           syncToken(session.provider_token);
         }
@@ -37,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [setZustandUser]);
 
   const syncToken = async (token: string) => {
     try {

@@ -15,7 +15,9 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
+  CreditCard,
 } from "lucide-react";
+import { UserMenu } from "./UserMenu";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
@@ -23,7 +25,7 @@ const nav = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
   { href: "/chat", label: "AI Chat", icon: MessageSquare },
   { href: "/dashboard", label: "Repositories", icon: FolderKanban },
-  { href: "/docs", label: "Documentation", icon: BookOpen },
+  { href: "/billing", label: "Billing", icon: CreditCard },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
@@ -135,45 +137,16 @@ export default function AppSidebar({
       {/* Footer */}
       <div
         className={cn(
-          "shrink-0 p-3 border-t border-white/8 space-y-2",
-          collapsed ? "flex flex-col items-center" : "",
+          "shrink-0 p-3 border-t border-white/8",
+          collapsed ? "flex justify-center" : "px-4",
         )}
       >
-        {collapsed ? (
-          <div className="size-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-xs font-bold text-white shadow">
-            U
-          </div>
-        ) : (
-          <div className="flex items-center gap-2.5 px-1">
-            <div className="size-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-xs font-bold text-white shadow shrink-0">
-              U
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-foreground truncate">
-                User
-              </div>
-              <div className="text-xs text-muted-foreground truncate">
-                Pro plan
-              </div>
-            </div>
-            <span className="shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-              PRO
-            </span>
-          </div>
-        )}
-
-        <Button
-          variant="ghost"
-          size={collapsed ? "icon" : "sm"}
-          onClick={handleLogout}
-          className={cn(
-            "w-full justify-start gap-3 rounded-xl text-muted-foreground hover:text-red-400 hover:bg-red-400/10 transition-colors",
-            collapsed ? "justify-center size-9" : "px-3 h-9",
-          )}
-        >
-          <LogOut className="size-4 shrink-0" />
-          {!collapsed && <span className="text-sm font-medium">Logout</span>}
-        </Button>
+        <UserMenu 
+          showName={!collapsed} 
+          isSidebar 
+          side="right" 
+          align={collapsed ? "center" : "end"} 
+        />
       </div>
     </aside>
   );

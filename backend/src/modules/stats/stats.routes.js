@@ -13,4 +13,10 @@ module.exports = async function (fastify) {
     { preHandler: [authMiddleware] },
     statsController.getRecentActivity
   );
+
+  fastify.get(
+    "/stats/usage",
+    { preHandler: [authMiddleware] },
+    statsController.getUsageStats
+  );
 };

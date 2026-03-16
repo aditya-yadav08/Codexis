@@ -247,3 +247,26 @@ exports.deleteRepo = async (request, reply) => {
     reply.code(500).send({ error: error.message });
   }
 };
+
+exports.getRepoStatus = async (request, reply) => {
+  try {
+    const { owner, repo } = request.query;
+    const userId = request.user.user_id;
+
+    const { data, error } = await supabase
+      .from("repos")
+      .select("status, indexing_error, total_files, processed_files")
+      .eq("owner", owner)
+      .eq("repo", repo)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) return reply.code(404).send({ error: "Repository not found" });
+
+    return data;
+  } catch (error) {
+    console.error("Get Repo Status Error:", error);
+    reply.code(500).send({ error: error.message });
+  }
+};

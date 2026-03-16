@@ -9,6 +9,7 @@ const authRoutes = require("../modules/auth/auth.routes");
 const repoRoutes = require("../modules/repos/repos.routes");
 const chatRoutes = require("../modules/chat/chat.routes");
 const statsRoutes = require("../modules/stats/stats.routes");
+const settingsRoutes = require("../modules/settings/settings.routes");
 
 const app = Fastify({
   logger: {
@@ -27,7 +28,7 @@ app.register(cookie, {
 app.register(cors, {
   origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
   credentials: true,
-  methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
+  methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
 });
 
@@ -54,6 +55,7 @@ app.register(mercurius, {
 app.register(authRoutes);
 app.register(repoRoutes);
 app.register(statsRoutes);
+app.register(settingsRoutes);
 app.register(require("../modules/chat/chat.routes"), { prefix: "/api" });
 
 // app.register(repoRoutes, { prefix: "/repos" });
