@@ -46,29 +46,40 @@ exports.askRepo = async (request, reply) => {
     }
 
     // rewrite query
+    console.log("[Chat] Rewriting query...");
     const improvedQuery = await rewriteQuery(question);
+    console.log("[Chat] Improved Query:", improvedQuery);
 
     // embed improved query
+    console.log("[Chat] Generating embedding...");
     const embedding = await embed(improvedQuery);
-
-    console.log("Original Query:", question);
-    console.log("Rewritten Query:", improvedQuery);
+    console.log("[Chat] Embedding generated, length:", embedding.length);
 
     // Step 2 — Vector search
-    const { data: chunks, error } = await supabase.rpc("match_code_chunks", {
+    console.log("[Chat] Calling match_code_chunks RPC...");
+    const { data: chunks, error: rpcError } = await supabase.rpc("match_code_chunks", {
       query_embedding: embedding,
-      match_count: 4,
+      match_count: 5,
       p_owner: owner,
       p_repo: repo,
     });
 
-    console.log(
-      "Retrieved chunks:",
-      chunks?.map((c) => ({
-        file: c.file_path,
-        start: c.start_line,
-      })),
-    );
+    if (rpcError) {
+      console.error("[Chat] Match Code Chunks RPC Error:", rpcError);
+      throw rpcError;
+    }
+
+    console.log(`[Chat] Retrieved ${chunks?.length || 0} chunks`);
+    
+    if (chunks) {
+      console.log(
+        "Retrieved chunks summary:",
+        chunks.map((c) => ({
+          file: c.file_path,
+          similarity: c.similarity
+        })),
+      );
+    }
 
     if (!chunks || chunks.length === 0) {
       return {
@@ -99,7 +110,9 @@ exports.askRepo = async (request, reply) => {
     }));
 
     // Step 4 — Ask LLM
+    console.log("[Chat] Generating answer from LLM...");
     const answer = await generateAnswer(question, context);
+    console.log("[Chat] Answer generated successfully");
 
     const result = {
       answer,
@@ -116,7 +129,13 @@ exports.askRepo = async (request, reply) => {
 
     return result;
   } catch (error) {
-    console.error(error);
-    reply.code(500).send({ error: error.message });
+    console.error("[Chat] ERROR in askRepo:", error);
+    if (error.response) {
+       console.error("[Chat] API Response Error Data:", error.response.data);
+    }
+    reply.code(500).send({ 
+      error: error.message,
+      details: error.details || error.hint || null
+    });
   }
 };

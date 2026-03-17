@@ -49,6 +49,7 @@ export default function Dashboard() {
       setRepos(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch repos:", error);
+      toast.error("Failed to connect to backend server. Please ensure the backend is running.");
       setRepos([]);
     } finally {
       setIsLoading(false);

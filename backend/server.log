@@ -1,7 +1,418 @@
-[dotenv@17.3.1] injecting env (7) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
-(node:45865) ExperimentalWarning: CommonJS module /Users/adityayadav/Developer/Projects/Personal/codexis/backend/src/modules/ai/embedder.js is loading ES Module /Users/adityayadav/Developer/Projects/Personal/codexis/node_modules/@xenova/transformers/src/transformers.js using require().
+[dotenv@17.3.1] injecting env (8) from .env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+(node:21903) ExperimentalWarning: CommonJS module /Users/adityayadav/Developer/Projects/Personal/Codexis/backend/src/modules/ai/embedder.js is loading ES Module /Users/adityayadav/Developer/Projects/Personal/Codexis/node_modules/@xenova/transformers/src/transformers.js using require().
 Support for loading ES Module in require() is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-[23:57:13.464] INFO (45865): Server listening at http://127.0.0.1:4000
-[23:57:13.464] INFO (45865): Server listening at http://192.168.1.8:4000
-[23:57:13.464] INFO (45865): 🚀 Codexis backend running on http://localhost:4000
+[10:35:50.226] INFO (21903): Server listening at http://127.0.0.1:4000
+[10:35:50.226] INFO (21903): Server listening at http://192.168.1.8:4000
+[10:35:50.226] INFO (21903): 🚀 Codexis backend running on http://localhost:4000
+[10:37:01.799] INFO (21903): incoming request
+    reqId: "req-1"
+    req: {
+      "method": "OPTIONS",
+      "url": "/settings",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65248
+    }
+[10:37:01.806] INFO (21903): request completed
+    reqId: "req-1"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 5.906000018119812
+[10:37:01.810] INFO (21903): incoming request
+    reqId: "req-2"
+    req: {
+      "method": "GET",
+      "url": "/settings",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65248
+    }
+[10:37:01.872] INFO (21903): incoming request
+    reqId: "req-3"
+    req: {
+      "method": "OPTIONS",
+      "url": "/settings",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65252
+    }
+[10:37:01.873] INFO (21903): request completed
+    reqId: "req-3"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 0.6201659440994263
+[10:37:01.874] INFO (21903): incoming request
+    reqId: "req-4"
+    req: {
+      "method": "OPTIONS",
+      "url": "/repos/indexed",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65254
+    }
+[10:37:01.875] INFO (21903): request completed
+    reqId: "req-4"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 0.45591604709625244
+[10:37:01.875] INFO (21903): incoming request
+    reqId: "req-5"
+    req: {
+      "method": "OPTIONS",
+      "url": "/settings",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65255
+    }
+[10:37:01.875] INFO (21903): request completed
+    reqId: "req-5"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 0.2811250686645508
+[10:37:01.876] INFO (21903): incoming request
+    reqId: "req-6"
+    req: {
+      "method": "OPTIONS",
+      "url": "/settings",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65256
+    }
+[10:37:01.876] INFO (21903): request completed
+    reqId: "req-6"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 0.2567499876022339
+[10:37:01.877] INFO (21903): incoming request
+    reqId: "req-7"
+    req: {
+      "method": "OPTIONS",
+      "url": "/repos/indexed",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65258
+    }
+[10:37:01.878] INFO (21903): request completed
+    reqId: "req-7"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 0.7518750429153442
+[10:37:01.883] INFO (21903): incoming request
+    reqId: "req-8"
+    req: {
+      "method": "GET",
+      "url": "/repos/indexed",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65258
+    }
+[10:37:02.890] INFO (21903): request completed
+    reqId: "req-2"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1080.1959999799728
+[10:37:02.891] INFO (21903): request completed
+    reqId: "req-8"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 1008.1896250247955
+[10:37:02.892] INFO (21903): incoming request
+    reqId: "req-9"
+    req: {
+      "method": "GET",
+      "url": "/settings",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65256
+    }
+[10:37:02.894] INFO (21903): incoming request
+    reqId: "req-a"
+    req: {
+      "method": "GET",
+      "url": "/repos/indexed",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65248
+    }
+[10:37:03.485] INFO (21903): request completed
+    reqId: "req-9"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 592.6072919368744
+[10:37:03.488] INFO (21903): request completed
+    reqId: "req-a"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 594.4540410041809
+[10:37:03.489] INFO (21903): incoming request
+    reqId: "req-b"
+    req: {
+      "method": "GET",
+      "url": "/settings",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65258
+    }
+[10:37:03.991] INFO (21903): request completed
+    reqId: "req-b"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 502.25912499427795
+[10:37:03.993] INFO (21903): incoming request
+    reqId: "req-c"
+    req: {
+      "method": "GET",
+      "url": "/settings",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65248
+    }
+[10:37:04.460] INFO (21903): request completed
+    reqId: "req-c"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 466.28691709041595
+[10:37:06.194] INFO (21903): incoming request
+    reqId: "req-d"
+    req: {
+      "method": "OPTIONS",
+      "url": "/api/chat/ask",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65248
+    }
+[10:37:06.195] INFO (21903): request completed
+    reqId: "req-d"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 1.0139999389648438
+[10:37:06.196] INFO (21903): incoming request
+    reqId: "req-e"
+    req: {
+      "method": "POST",
+      "url": "/api/chat/ask",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65248
+    }
+Cache HIT for query: Summarise recent changes
+[10:37:06.783] INFO (21903): request completed
+    reqId: "req-e"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 586.4345419406891
+[10:37:14.697] INFO (21903): incoming request
+    reqId: "req-f"
+    req: {
+      "method": "OPTIONS",
+      "url": "/repos/indexed",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65248
+    }
+[10:37:14.697] INFO (21903): request completed
+    reqId: "req-f"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 0.2793329954147339
+[10:37:14.697] INFO (21903): incoming request
+    reqId: "req-g"
+    req: {
+      "method": "OPTIONS",
+      "url": "/repos/indexed",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65258
+    }
+[10:37:14.697] INFO (21903): request completed
+    reqId: "req-g"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 0.11070907115936279
+[10:37:14.698] INFO (21903): incoming request
+    reqId: "req-h"
+    req: {
+      "method": "GET",
+      "url": "/repos/indexed",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65258
+    }
+[10:37:15.280] INFO (21903): request completed
+    reqId: "req-h"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 581.7985420227051
+[10:37:15.281] INFO (21903): incoming request
+    reqId: "req-i"
+    req: {
+      "method": "GET",
+      "url": "/repos/indexed",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65248
+    }
+[10:37:15.997] INFO (21903): request completed
+    reqId: "req-i"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 716.0768339633942
+[10:37:17.457] INFO (21903): incoming request
+    reqId: "req-j"
+    req: {
+      "method": "GET",
+      "url": "/repos/indexed",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65248
+    }
+[10:37:17.950] INFO (21903): request completed
+    reqId: "req-j"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 493.0827919244766
+[10:37:17.952] INFO (21903): incoming request
+    reqId: "req-k"
+    req: {
+      "method": "GET",
+      "url": "/repos/indexed",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65258
+    }
+[10:37:18.557] INFO (21903): request completed
+    reqId: "req-k"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 604.4761669635773
+[10:37:18.816] INFO (21903): incoming request
+    reqId: "req-l"
+    req: {
+      "method": "OPTIONS",
+      "url": "/api/chat/ask",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65258
+    }
+[10:37:18.817] INFO (21903): request completed
+    reqId: "req-l"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 0.6459159851074219
+[10:37:18.818] INFO (21903): incoming request
+    reqId: "req-m"
+    req: {
+      "method": "POST",
+      "url": "/api/chat/ask",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65258
+    }
+[Chat] Rewriting query...
+[Chat] Improved Query: To provide a summary of recent changes, I would need more context about the specific area or system you are referring to. Could you please specify which field or domain you are interested in, such as technology, policy, company updates, or a particular event? This will help me give you a more accurate and relevant summary.
+[Chat] Generating embedding...
+[Chat] Embedding generated, length: 384
+[Chat] Calling match_code_chunks RPC...
+[Chat] Retrieved 5 chunks
+Retrieved chunks summary: [
+  { file: 'backend/add-updated-at.sql', similarity: 0.165329833666068 },
+  {
+    file: 'backend/src/modules/ai/llm.js',
+    similarity: 0.141376107622169
+  },
+  { file: 'backend/setup-db.sql', similarity: 0.134678520839128 },
+  {
+    file: 'backend/src/modules/stats/stats.controller.js',
+    similarity: 0.113532260060314
+  },
+  { file: 'backend/migrate-users.js', similarity: 0.0944398997544945 }
+]
+[Chat] Generating answer from LLM...
+[Chat] Answer generated successfully
+Cache MISS - Answer saved to Redis
+[10:37:45.422] INFO (21903): request completed
+    reqId: "req-m"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 26603.22966694832
+[10:38:36.476] INFO (21903): incoming request
+    reqId: "req-n"
+    req: {
+      "method": "OPTIONS",
+      "url": "/api/chat/ask",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65258
+    }
+[10:38:36.477] INFO (21903): request completed
+    reqId: "req-n"
+    res: {
+      "statusCode": 204
+    }
+    responseTime: 0.9692919254302979
+[10:38:36.477] INFO (21903): incoming request
+    reqId: "req-o"
+    req: {
+      "method": "POST",
+      "url": "/api/chat/ask",
+      "host": "localhost:4000",
+      "remoteAddress": "127.0.0.1",
+      "remotePort": 65258
+    }
+[Chat] Rewriting query...
+[Chat] Improved Query: what are the main unique features of this repo compared to other apps?
+[Chat] Generating embedding...
+[Chat] Embedding generated, length: 384
+[Chat] Calling match_code_chunks RPC...
+[Chat] Retrieved 5 chunks
+Retrieved chunks summary: [
+  {
+    file: 'backend/src/modules/stats/stats.controller.js',
+    similarity: 0.290545778903114
+  },
+  { file: 'backend/setup-db.sql', similarity: 0.290359628775142 },
+  {
+    file: 'backend/src/modules/ai/llm.js',
+    similarity: 0.24205928130195
+  },
+  {
+    file: 'backend/src/modules/repos/repos.controller.js',
+    similarity: 0.23378598786676
+  },
+  {
+    file: 'backend/src/modules/repos/repos.routes.js',
+    similarity: 0.232722358975131
+  }
+]
+[Chat] Generating answer from LLM...
+[Chat] Answer generated successfully
+Cache MISS - Answer saved to Redis
+[10:38:58.300] INFO (21903): request completed
+    reqId: "req-o"
+    res: {
+      "statusCode": 200
+    }
+    responseTime: 21822.132750034332
