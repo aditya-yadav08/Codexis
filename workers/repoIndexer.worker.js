@@ -246,7 +246,7 @@ const worker = new Worker(
       console.log("Repo indexing completed:", repo);
     } catch (error) {
       console.error("Worker Error:", error.message);
-      // MARK REPO AS FAILED
+      // MARK REPO AS FAILED (Fail Scenario)
       await supabase
         .from("repos")
         .update({
