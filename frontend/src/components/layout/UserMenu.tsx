@@ -46,16 +46,12 @@ export function UserMenu({ showName = false, align = "end", side = "bottom", isS
         if (!session) return;
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/settings`, {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`
-          }
+          headers: { Authorization: `Bearer ${session.access_token}` }
         });
         const data = await res.json();
-        
+
         const email = session.user.email || "";
         const name = data.full_name || data.username || email.split("@")[0];
-        
-        // Consistent initials logic: Uppercase, 2 chars max
         const initials = name
           .split(/[\s-]+/)
           .map((n: string) => n[0])
@@ -63,11 +59,11 @@ export function UserMenu({ showName = false, align = "end", side = "bottom", isS
           .toUpperCase()
           .slice(0, 2);
 
-        setUserData({ 
-          name, 
-          email, 
+        setUserData({
+          name,
+          email,
           avatar: data.avatar || session.user.user_metadata?.avatar_url,
-          initials 
+          initials
         });
       } catch (err) {
         console.error("Fetch user menu data error:", err);
@@ -81,7 +77,7 @@ export function UserMenu({ showName = false, align = "end", side = "bottom", isS
     router.push("/login");
   };
 
-  if (!userData) return <div className="size-8 rounded-full bg-white/5 animate-pulse" />;
+  if (!userData) return <div className="size-8 rounded-full bg-muted animate-pulse" />;
 
   return (
     <DropdownMenu>
@@ -100,7 +96,7 @@ export function UserMenu({ showName = false, align = "end", side = "bottom", isS
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full bg-emerald-500 border-2 border-background" />
           </div>
-          
+
           {showName && (
             <div className="flex flex-col items-start min-w-0">
               <span className="text-sm font-medium text-foreground/90 truncate max-w-[120px]">
@@ -118,7 +114,7 @@ export function UserMenu({ showName = false, align = "end", side = "bottom", isS
         align={align}
         side={side}
         sideOffset={12}
-        className="w-64 p-2 bg-[oklch(0.12_0.015_265)]/95 border-white/10 backdrop-blur-2xl shadow-2xl rounded-2xl animate-in fade-in-0 zoom-in-95 duration-200 z-50"
+        className="w-64 p-2 bg-popover border-border backdrop-blur-2xl shadow-2xl rounded-2xl animate-in fade-in-0 zoom-in-95 duration-200 z-50"
       >
         <DropdownMenuLabel className="p-3">
           <div className="flex flex-col space-y-1">
@@ -135,59 +131,59 @@ export function UserMenu({ showName = false, align = "end", side = "bottom", isS
             </p>
           </div>
         </DropdownMenuLabel>
-        
-        <DropdownMenuSeparator className="bg-white/5 mx-1" />
-        
-        <DropdownMenuGroup className="space-y-1 p-1">
-          <DropdownMenuItem 
-            className="flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground focus:text-foreground focus:bg-white/6 cursor-pointer transition-colors"
+
+        <DropdownMenuSeparator className="bg-border mx-1" />
+
+        <DropdownMenuGroup className="space-y-0.5 p-1">
+          <DropdownMenuItem
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground focus:text-foreground focus:bg-accent cursor-pointer transition-colors"
             onClick={() => router.push("/settings/profile")}
           >
             <User className="size-4" />
             <span className="flex-1">My Profile</span>
             <ChevronRight className="size-3 opacity-30" />
           </DropdownMenuItem>
-          <DropdownMenuItem 
-            className="flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground focus:text-foreground focus:bg-white/6 cursor-pointer transition-colors"
+          <DropdownMenuItem
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground focus:text-foreground focus:bg-accent cursor-pointer transition-colors"
             onClick={() => router.push("/settings")}
           >
             <Settings className="size-4" />
             <span className="flex-1">Settings</span>
             <ChevronRight className="size-3 opacity-30" />
           </DropdownMenuItem>
-          <DropdownMenuItem 
-            className="flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground focus:text-foreground focus:bg-white/6 cursor-pointer transition-colors"
+          <DropdownMenuItem
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground focus:text-foreground focus:bg-accent cursor-pointer transition-colors"
             onClick={() => router.push("/billing")}
           >
             <CreditCard className="size-4" />
             <span className="flex-1">Billing</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        
-        <DropdownMenuSeparator className="bg-white/5 mx-1" />
-        
-        <DropdownMenuGroup className="space-y-1 p-1">
-          <DropdownMenuItem 
+
+        <DropdownMenuSeparator className="bg-border mx-1" />
+
+        <DropdownMenuGroup className="space-y-0.5 p-1">
+          <DropdownMenuItem
             className="flex items-center gap-3 px-3 py-2 rounded-xl text-indigo-400 focus:text-indigo-300 focus:bg-indigo-500/10 cursor-pointer transition-colors"
             onClick={() => router.push("/billing")}
           >
             <Sparkles className="size-4" />
             <span className="flex-1 font-medium">Upgrade to Business</span>
           </DropdownMenuItem>
-          <DropdownMenuItem 
-            className="flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground focus:text-foreground focus:bg-white/6 cursor-pointer transition-colors"
+          <DropdownMenuItem
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground focus:text-foreground focus:bg-accent cursor-pointer transition-colors"
             onClick={() => router.push("/settings/security")}
           >
             <ShieldCheck className="size-4" />
             <span className="flex-1">Security</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        
-        <DropdownMenuSeparator className="bg-white/5 mx-1" />
-        
+
+        <DropdownMenuSeparator className="bg-border mx-1" />
+
         <div className="p-1">
-          <DropdownMenuItem 
-            className="flex items-center gap-3 px-3 py-2 rounded-xl text-rose-400 focus:text-rose-300 focus:bg-rose-500/10 cursor-pointer transition-colors"
+          <DropdownMenuItem
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-rose-500 focus:text-rose-400 focus:bg-rose-500/10 cursor-pointer transition-colors"
             onClick={handleLogout}
           >
             <LogOut className="size-4" />

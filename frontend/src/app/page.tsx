@@ -32,7 +32,7 @@ function StatCard({
   gradient: string;
 }) {
   return (
-    <Card className="relative rounded-2xl border-white/8 bg-white/4 overflow-hidden group hover:border-white/15 transition-all duration-300 hover:-translate-y-0.5">
+    <Card className="relative rounded-2xl border-border bg-card/50 overflow-hidden group hover:border-border/80 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
       <div
         className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${gradient} blur-2xl scale-150`}
       />
@@ -40,9 +40,7 @@ function StatCard({
         <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
           {title}
         </CardTitle>
-        <div
-          className={`size-9 rounded-xl flex items-center justify-center ${gradient} opacity-90`}
-        >
+        <div className={`size-9 rounded-xl flex items-center justify-center ${gradient} opacity-90`}>
           <Icon className="size-4 text-white" />
         </div>
       </CardHeader>
@@ -51,7 +49,7 @@ function StatCard({
           {value}
         </div>
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <TrendingUp className="size-3 text-emerald-400" />
+          <TrendingUp className="size-3 text-emerald-500" />
           {subtext}
         </div>
       </CardContent>
@@ -69,9 +67,7 @@ function ActivityItem({
   status: string;
 }) {
   const timeAgo = (date: string) => {
-    const seconds = Math.floor(
-      (new Date().getTime() - new Date(date).getTime()) / 1000,
-    );
+    const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
     if (seconds < 60) return "Just now";
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m ago`;
@@ -82,25 +78,17 @@ function ActivityItem({
 
   const getStatusColor = (s: string) => {
     switch (s) {
-      case "completed":
-        return "bg-emerald-400";
-      case "indexing":
-        return "bg-indigo-400 animate-pulse";
-      case "failed":
-        return "bg-rose-400";
-      default:
-        return "bg-amber-400";
+      case "completed": return "bg-emerald-500";
+      case "indexing": return "bg-indigo-400 animate-pulse";
+      case "failed": return "bg-rose-500";
+      default: return "bg-amber-400";
     }
   };
 
   return (
-    <div className="flex items-center gap-3 rounded-xl px-3 py-2.5 bg-white/3 border border-white/6 hover:bg-white/5 transition-colors">
-      <span
-        className={`size-2 rounded-full shrink-0 ${getStatusColor(status)}`}
-      />
-      <span className="text-sm text-foreground/85 flex-1 truncate">
-        {label}
-      </span>
+    <div className="flex items-center gap-3 rounded-xl px-3 py-2.5 bg-muted/40 border border-border hover:bg-muted/60 transition-colors">
+      <span className={`size-2 rounded-full shrink-0 ${getStatusColor(status)}`} />
+      <span className="text-sm text-foreground/85 flex-1 truncate">{label}</span>
       <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-1">
         <Clock className="size-3" />
         {timeAgo(timestamp)}
@@ -125,9 +113,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchDashboardData() {
       try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
+        const { data: { session } } = await supabase.auth.getSession();
         if (!session) return;
 
         const headers = { Authorization: `Bearer ${session.access_token}` };
@@ -148,16 +134,8 @@ export default function Home() {
             responseTime: statsData.responseTime,
           });
         }
-
-        if (activityRes.ok) {
-          const activityData = await activityRes.json();
-          setActivities(activityData);
-        }
-
-        if (usageRes.ok) {
-          const usageData = await usageRes.json();
-          setUsageData(usageData);
-        }
+        if (activityRes.ok) setActivities(await activityRes.json());
+        if (usageRes.ok) setUsageData(await usageRes.json());
       } catch (err) {
         console.error("Dashboard fetch error:", err);
       } finally {
@@ -165,7 +143,6 @@ export default function Home() {
         setLoadingUsage(false);
       }
     }
-
     fetchDashboardData();
   }, []);
 
@@ -180,15 +157,14 @@ export default function Home() {
             <h1 className="text-xl font-bold tracking-tight">Overview</h1>
           </div>
           <p className="text-sm text-muted-foreground">
-            Monitor your repositories, indexing status, and AI usage at a
-            glance.
+            Monitor your repositories, indexing status, and AI usage at a glance.
           </p>
         </div>
 
         <Button
           variant="outline"
           onClick={() => router.push("/dashboard")}
-          className="rounded-xl border-white/10 bg-white/4 hover:bg-white/8 hover:border-white/20 gap-2 text-sm"
+          className="rounded-xl border-border bg-muted/40 hover:bg-muted hover:border-border gap-2 text-sm"
         >
           View Repositories
           <ArrowUpRight className="size-3.5" />
@@ -196,48 +172,24 @@ export default function Home() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard
-          title="Indexed Repos"
-          value={stats.repos}
-          subtext="Successfully indexed"
-          icon={GitBranch}
-          gradient="bg-gradient-to-br from-indigo-500 to-indigo-600"
-        />
-        <StatCard
-          title="Indexed files"
-          value={stats.files}
-          subtext="Available to chat"
-          icon={Database}
-          gradient="bg-gradient-to-br from-violet-500 to-violet-600"
-        />
-        <StatCard
-          title="Questions"
-          value={stats.questions}
-          subtext="Asked in last 7 days"
-          icon={MessageSquare}
-          gradient="bg-gradient-to-br from-emerald-500 to-teal-600"
-        />
-        <StatCard
-          title="Response time"
-          value={stats.responseTime}
-          subtext="Average (p50)"
-          icon={Activity}
-          gradient="bg-gradient-to-br from-amber-500 to-orange-600"
-        />
+        <StatCard title="Indexed Repos" value={stats.repos} subtext="Successfully indexed" icon={GitBranch} gradient="bg-gradient-to-br from-indigo-500 to-indigo-600" />
+        <StatCard title="Indexed files" value={stats.files} subtext="Available to chat" icon={Database} gradient="bg-gradient-to-br from-violet-500 to-violet-600" />
+        <StatCard title="Questions" value={stats.questions} subtext="Asked in last 7 days" icon={MessageSquare} gradient="bg-gradient-to-br from-emerald-500 to-teal-600" />
+        <StatCard title="Response time" value={stats.responseTime} subtext="Average (p50)" icon={Activity} gradient="bg-gradient-to-br from-amber-500 to-orange-600" />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        <Card className="xl:col-span-2 rounded-2xl border-white/8 bg-white/4">
+        <Card className="xl:col-span-2 rounded-2xl border-border bg-card/50">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-semibold">Usage</CardTitle>
-              <span className="text-xs text-muted-foreground bg-white/6 border border-white/10 rounded-full px-2.5 py-0.5">
+              <span className="text-xs text-muted-foreground bg-muted border border-border rounded-full px-2.5 py-0.5">
                 Last 7 days
               </span>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="relative h-52 w-full rounded-xl border border-white/8 bg-background/50 overflow-hidden flex items-center justify-center">
+            <div className="relative h-52 w-full rounded-xl border border-border bg-background/50 overflow-hidden flex items-center justify-center">
               {loadingUsage ? (
                 <>
                   <div className="absolute inset-0 animate-shimmer opacity-60" />
@@ -258,11 +210,9 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-white/8 bg-white/4">
+        <Card className="rounded-2xl border-border bg-card/50">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold">
-              Recent activity
-            </CardTitle>
+            <CardTitle className="text-sm font-semibold">Recent activity</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {loading ? (
@@ -272,12 +222,7 @@ export default function Home() {
               </div>
             ) : activities.length > 0 ? (
               activities.map((act, i) => (
-                <ActivityItem
-                  key={i}
-                  label={act.label}
-                  timestamp={act.timestamp}
-                  status={act.status}
-                />
+                <ActivityItem key={i} label={act.label} timestamp={act.timestamp} status={act.status} />
               ))
             ) : (
               <div className="text-center py-10 text-xs text-muted-foreground italic">

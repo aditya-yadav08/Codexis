@@ -25,7 +25,7 @@ exports.updateSettings = async (request, reply) => {
     const updates = request.body;
 
     // Filter allowed fields
-    const allowedFields = ["full_name", "bio", "workspace_name", "default_branch", "avatar"];
+    const allowedFields = ["full_name", "bio", "workspace_name", "default_branch", "avatar", "notifications", "theme", "accent_color"];
     const filteredUpdates = {};
     
     Object.keys(updates).forEach(key => {

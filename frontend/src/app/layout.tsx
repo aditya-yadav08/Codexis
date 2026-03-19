@@ -18,8 +18,9 @@ export const metadata: Metadata = {
   description: "Chat with your codebase using AI. Index repositories, ask questions, and get instant answers powered by Codexis.",
 };
 
-import { Toaster } from "sonner";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ThemedToaster } from "@/components/providers/ThemedToaster";
 
 export default function RootLayout({
   children,
@@ -27,12 +28,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${sansFont.variable} ${monoFont.variable}`}>
+    <html lang="en" className={`${sansFont.variable} ${monoFont.variable}`}>
       <body className="antialiased">
         <AuthProvider>
-          <AppLayout>{children}</AppLayout>
+          <ThemeProvider>
+            <AppLayout>{children}</AppLayout>
+          </ThemeProvider>
         </AuthProvider>
-        <Toaster closeButton position="bottom-right" theme="dark" richColors />
+        <ThemedToaster />
       </body>
     </html>
   );

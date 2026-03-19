@@ -3,11 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-
 import { toast } from "sonner";
 
 export default function SettingsPage() {
@@ -22,9 +20,7 @@ export default function SettingsPage() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/settings`, {
-          headers: {
-             Authorization: `Bearer ${session?.access_token}`
-          }
+          headers: { Authorization: `Bearer ${session?.access_token}` }
         });
         const data = await res.json();
         setWorkspaceName(data.workspace_name || `${data.username}'s Workspace`);
@@ -48,16 +44,10 @@ export default function SettingsPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${session?.access_token}`
         },
-        body: JSON.stringify({
-          workspace_name: workspaceName,
-          default_branch: defaultBranch
-        })
+        body: JSON.stringify({ workspace_name: workspaceName, default_branch: defaultBranch })
       });
-      if (res.ok) {
-        toast.success("Settings updated successfully!");
-      } else {
-        toast.error("Failed to update settings.");
-      }
+      if (res.ok) toast.success("Settings updated successfully!");
+      else toast.error("Failed to update settings.");
     } catch (err) {
       console.error("Update settings error:", err);
       toast.error("An error occurred while saving.");
@@ -68,14 +58,11 @@ export default function SettingsPage() {
 
   const handleDeleteAccount = async () => {
     if (!confirm("Are you sure you want to delete your account? This action is irreversible.")) return;
-    
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/settings`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`
-        }
+        headers: { Authorization: `Bearer ${session?.access_token}` }
       });
       if (res.ok) {
         toast.success("Account deleted.");
@@ -90,11 +77,15 @@ export default function SettingsPage() {
     }
   };
 
-  if (loading) return <div className="p-8 text-center text-muted-foreground">Loading settings...</div>;
+  if (loading) return (
+    <div className="p-8 text-center">
+      <div className="inline-block size-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
 
   return (
     <div className="space-y-6">
-      <Card className="border-white/8 bg-white/4">
+      <Card className="border-border bg-card/50">
         <CardHeader>
           <CardTitle className="text-base font-semibold">General Settings</CardTitle>
           <CardDescription>
@@ -104,23 +95,23 @@ export default function SettingsPage() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Workspace Name</label>
-            <Input 
-               value={workspaceName}
-               onChange={(e) => setWorkspaceName(e.target.value)}
-               placeholder="My Awesome Project" 
-               className="rounded-xl bg-white/5 border-white/10 focus-visible:ring-indigo-500/50"
+            <Input
+              value={workspaceName}
+              onChange={(e) => setWorkspaceName(e.target.value)}
+              placeholder="My Awesome Project"
+              className="rounded-xl bg-muted/50 border-border focus-visible:ring-indigo-500/50"
             />
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">Default Branch</label>
-            <Input 
-               value={defaultBranch}
-               onChange={(e) => setDefaultBranch(e.target.value)}
-               placeholder="main" 
-               className="rounded-xl bg-white/5 border-white/10 focus-visible:ring-indigo-500/50"
+            <Input
+              value={defaultBranch}
+              onChange={(e) => setDefaultBranch(e.target.value)}
+              placeholder="main"
+              className="rounded-xl bg-muted/50 border-border focus-visible:ring-indigo-500/50"
             />
           </div>
-          <Button 
+          <Button
             onClick={handleUpdate}
             disabled={saving}
             className="rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 border-0 shadow-lg shadow-indigo-500/20"
@@ -129,19 +120,19 @@ export default function SettingsPage() {
           </Button>
         </CardContent>
       </Card>
-      
-      <Card className="border-red-500/10 bg-red-500/5">
+
+      <Card className="border-destructive/20 bg-destructive/5">
         <CardHeader>
-          <CardTitle className="text-base font-semibold text-red-400">Danger Zone</CardTitle>
-          <CardDescription className="text-red-400/60">
+          <CardTitle className="text-base font-semibold text-destructive">Danger Zone</CardTitle>
+          <CardDescription className="text-destructive/60">
             Irreversible actions that affect your entire account.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button 
+          <Button
             onClick={handleDeleteAccount}
-            variant="destructive" 
-            className="rounded-xl bg-red-500 shadow-lg shadow-red-500/20"
+            variant="destructive"
+            className="rounded-xl shadow-lg"
           >
             Delete Workspace
           </Button>

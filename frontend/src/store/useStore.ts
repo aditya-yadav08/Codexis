@@ -12,9 +12,14 @@ interface AppState {
   user: User | null;
   setUser: (user: User | null) => void;
 
-  // App Context
   activeRepo: { owner: string; repo: string } | null;
   setActiveRepo: (repo: { owner: string; repo: string } | null) => void;
+
+  // Appearance State
+  theme: string;
+  accentColor: string;
+  setTheme: (theme: string) => void;
+  setAccentColor: (accent: string) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -28,7 +33,12 @@ export const useStore = create<AppState>((set) => ({
   user: null,
   setUser: (user) => set({ user }),
 
-  // App Context Initial State
   activeRepo: null,
   setActiveRepo: (repo) => set({ activeRepo: repo }),
+
+  // Appearance Initial State
+  theme: "dark",
+  accentColor: "Indigo",
+  setTheme: (theme) => set({ theme }),
+  setAccentColor: (accentColor) => set({ accentColor }),
 }));

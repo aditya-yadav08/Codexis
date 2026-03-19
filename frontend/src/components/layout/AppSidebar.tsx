@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -10,11 +9,9 @@ import {
   LayoutDashboard,
   MessageSquare,
   FolderKanban,
-  BookOpen,
   Settings,
   ChevronLeft,
   ChevronRight,
-  LogOut,
   CreditCard,
 } from "lucide-react";
 import { UserMenu } from "./UserMenu";
@@ -47,14 +44,14 @@ export default function AppSidebar({
   return (
     <aside
       className={cn(
-        "relative h-screen flex flex-col border-r border-white/8 bg-[oklch(0.12_0.015_265)] transition-[width] duration-300 ease-in-out",
+        "relative h-screen flex flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-300 ease-in-out",
         collapsed ? "w-16" : "w-64",
       )}
     >
       {/* Logo */}
       <div
         className={cn(
-          "h-16 flex items-center border-b border-white/8 px-4 shrink-0 gap-3",
+          "h-16 flex items-center border-b border-sidebar-border px-4 shrink-0 gap-3",
           collapsed ? "justify-center" : "justify-between",
         )}
       >
@@ -68,7 +65,7 @@ export default function AppSidebar({
             onClick={onToggle}
             aria-label="Collapse sidebar"
             title="Collapse sidebar"
-            className="hidden cursor-pointer md:inline-flex size-7 shrink-0 text-muted-foreground hover:text-foreground hover:bg-white/8 rounded-lg"
+            className="hidden cursor-pointer md:inline-flex size-7 shrink-0 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg"
           >
             <ChevronLeft className="size-4" />
           </Button>
@@ -84,7 +81,7 @@ export default function AppSidebar({
           onClick={onToggle}
           aria-label="Expand sidebar"
           title="Expand sidebar"
-          className="hidden cursor-pointer md:inline-flex absolute -right-3 top-[72px] z-10 size-6 bg-[oklch(0.14_0.015_265)] border border-white/10 rounded-full text-muted-foreground hover:text-foreground shadow-sm"
+          className="hidden cursor-pointer md:inline-flex absolute -right-3 top-[72px] z-10 size-6 bg-card border border-border rounded-full text-muted-foreground hover:text-foreground shadow-sm"
         >
           <ChevronRight className="size-3" />
         </Button>
@@ -113,8 +110,8 @@ export default function AppSidebar({
                 "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
                 collapsed ? "justify-center" : "",
                 active
-                  ? "bg-gradient-to-r from-indigo-500/20 to-violet-500/10 text-white ring-1 ring-indigo-500/30 shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-white/6",
+                  ? "bg-gradient-to-r from-indigo-500/20 to-violet-500/10 text-foreground ring-1 ring-indigo-500/30 shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent",
               )}
             >
               <Icon
@@ -137,15 +134,15 @@ export default function AppSidebar({
       {/* Footer */}
       <div
         className={cn(
-          "shrink-0 p-3 border-t border-white/8",
+          "shrink-0 p-3 border-t border-sidebar-border",
           collapsed ? "flex justify-center" : "px-4",
         )}
       >
-        <UserMenu 
-          showName={!collapsed} 
-          isSidebar 
-          side="right" 
-          align={collapsed ? "center" : "end"} 
+        <UserMenu
+          showName={!collapsed}
+          isSidebar
+          side="right"
+          align={collapsed ? "center" : "end"}
         />
       </div>
     </aside>
