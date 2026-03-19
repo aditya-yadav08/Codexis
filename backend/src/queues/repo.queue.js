@@ -1,7 +1,5 @@
 const { Queue } = require("bullmq");
-const IORedis = require("ioredis");
-
-const connection = new IORedis();
+const connection = require("../lib/redis");
 
 const repoQueue = new Queue("repo-index", {
   connection

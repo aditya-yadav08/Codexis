@@ -1,5 +1,5 @@
 const { Queue } = require("bullmq");
-const connection = require("../../../workers/src/lib/redis");
+const connection = require("../lib/redis");
 
 const embedQueue = new Queue("generate-embeddings", { connection });
 
