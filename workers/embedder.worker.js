@@ -1,7 +1,9 @@
 const path = require("path");
-require("dotenv").config({
-  path: path.resolve(__dirname, "../backend/.env"),
-});
+const fs = require("fs");
+const dotenvPath = path.resolve(__dirname, "../backend/.env");
+if (fs.existsSync(dotenvPath)) {
+  require("dotenv").config({ path: dotenvPath });
+}
 
 const { Worker } = require("bullmq");
 const connection = require("./src/lib/redis");
