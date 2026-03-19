@@ -26,7 +26,11 @@ app.register(cookie, {
 
 // Register CORS plugin
 app.register(cors, {
-  origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+  origin: [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    process.env.FRONTEND_URL,
+  ].filter(Boolean),
   credentials: true,
   methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
