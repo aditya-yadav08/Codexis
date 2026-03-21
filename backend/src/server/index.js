@@ -61,6 +61,7 @@ app.register(repoRoutes);
 app.register(statsRoutes);
 app.register(settingsRoutes);
 app.register(require("../modules/chat/chat.routes"), { prefix: "/api" });
+app.register(require("../modules/pr/pr.routes"), { prefix: "/api/repos" });
 
 // app.register(repoRoutes, { prefix: "/repos" });
 

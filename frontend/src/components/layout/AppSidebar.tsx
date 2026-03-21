@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
   CreditCard,
+  GitPullRequest,
 } from "lucide-react";
 import { UserMenu } from "./UserMenu";
 import { supabase } from "@/lib/supabase";
@@ -22,6 +23,7 @@ const nav = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
   { href: "/chat", label: "AI Chat", icon: MessageSquare },
   { href: "/dashboard", label: "Repositories", icon: FolderKanban },
+  { href: "/pr-analyzer", label: "AI PR Analyzer", icon: GitPullRequest },
   { href: "/billing", label: "Billing", icon: CreditCard },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
