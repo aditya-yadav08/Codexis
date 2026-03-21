@@ -2,10 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Menu, Search, Bell, Plus } from "lucide-react";
+import { Menu, Search, Bell, Plus, BellRing } from "lucide-react";
 import { useState } from "react";
 import ConnectRepoModal from "@/components/repos/ConnectRepoModal";
 import { UserMenu } from "./UserMenu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export default function AppNavbar({
   onOpenSidebarMobile,
@@ -34,7 +35,7 @@ export default function AppNavbar({
           <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
           <Input
             placeholder="Search repositories, chats…"
-            className="pl-9 pr-14 h-9 rounded-xl bg-muted/60 border-border text-sm placeholder:text-muted-foreground/60 focus-visible:ring-indigo-500/50 focus-visible:border-indigo-500/40"
+            className="pl-9 pr-14 h-9 rounded-xl bg-muted/60 border-border text-sm placeholder:text-muted-foreground/60 focus-visible:ring-accent-primary/50 focus-visible:border-accent-primary/40"
           />
           <kbd className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center gap-0.5 rounded-md border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
             ⌘K
@@ -47,22 +48,40 @@ export default function AppNavbar({
         <Button
           size="sm"
           onClick={() => setOpenConnectModal(true)}
-          className="hidden sm:inline-flex gap-1.5 h-8 px-3 cursor-pointer rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white border-0 hover:from-indigo-400 hover:to-violet-500 shadow-md shadow-indigo-500/20 text-xs font-semibold transition-all"
+          className="hidden sm:inline-flex gap-1.5 h-8 px-3 cursor-pointer rounded-xl bg-gradient-to-r from-accent-primary to-accent-secondary text-white border-0 hover:from-accent-primary/80 hover:to-accent-secondary/80 shadow-md shadow-accent-glow/20 text-xs font-semibold transition-all"
         >
           <Plus className="size-3.5" />
           Connect Repo
         </Button>
 
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="size-8 cursor-pointer relative text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg"
-          aria-label="Notifications"
-        >
-          <Bell className="size-4" />
-          <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-indigo-400 ring-1 ring-background" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-8 cursor-pointer relative text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg"
+              aria-label="Notifications"
+            >
+              <Bell className="size-4" />
+              <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-accent-primary ring-1 ring-background" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-80 p-0 border-border bg-card/95 backdrop-blur-xl">
+            <div className="flex flex-col items-center justify-center relative py-12 px-6 text-center overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-accent-primary/5 to-transparent pointer-events-none" />
+              <div className="size-12 rounded-full bg-accent-primary/10 flex items-center justify-center mb-4 relative z-10 shadow-lg shadow-accent-glow/20">
+                <BellRing className="size-5 text-accent-primary" />
+              </div>
+              <div className="space-y-2 relative z-10">
+                <h4 className="text-sm font-semibold text-foreground">Notifications Coming Soon</h4>
+                <p className="text-xs text-muted-foreground/80 leading-relaxed">
+                  We are building an all-new notification center to keep you up-to-date on your repository indexing, repository insights, and team activity.
+                </p>
+              </div>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <UserMenu />
       </div>

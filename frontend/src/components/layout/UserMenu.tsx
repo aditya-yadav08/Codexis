@@ -87,7 +87,7 @@ export function UserMenu({ showName = false, align = "end", side = "bottom", isS
           isSidebar && !showName ? "justify-center" : "px-0.5"
         )}>
           <div className="relative">
-            <div className="size-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-xs font-bold text-white shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-200 overflow-hidden">
+            <div className="size-8 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-xs font-bold text-white shadow-lg shadow-accent-glow/20 group-hover:scale-105 transition-transform duration-200 overflow-hidden">
               {userData.avatar ? (
                 <img src={userData.avatar} alt={userData.name} className="size-full object-cover" />
               ) : (
@@ -122,7 +122,7 @@ export function UserMenu({ showName = false, align = "end", side = "bottom", isS
               <p className="text-sm font-semibold leading-none text-foreground">
                 {userData.name}
               </p>
-              <span className="inline-flex items-center rounded-full bg-indigo-500/10 px-1.5 py-0.5 text-[10px] font-medium text-indigo-400 ring-1 ring-inset ring-indigo-500/20">
+              <span className="inline-flex items-center rounded-full bg-accent-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-accent-primary ring-1 ring-inset ring-accent-primary/20">
                 PRO
               </span>
             </div>
@@ -164,7 +164,7 @@ export function UserMenu({ showName = false, align = "end", side = "bottom", isS
 
         <DropdownMenuGroup className="space-y-0.5 p-1">
           <DropdownMenuItem
-            className="flex items-center gap-3 px-3 py-2 rounded-xl text-indigo-400 focus:text-indigo-300 focus:bg-indigo-500/10 cursor-pointer transition-colors"
+            className="flex items-center gap-3 px-3 py-2 rounded-xl text-accent-primary focus:text-accent-primary/80 focus:bg-accent-primary/10 cursor-pointer transition-colors"
             onClick={() => router.push("/billing")}
           >
             <Sparkles className="size-4" />

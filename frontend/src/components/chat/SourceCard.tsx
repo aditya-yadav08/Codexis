@@ -20,8 +20,8 @@ export default function SourceCard({ source }: any) {
       {/* File header */}
       <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-white/8 bg-white/3">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="size-5 rounded-md bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center shrink-0">
-            <FileCode2 className="size-3 text-indigo-400" />
+          <div className="size-5 rounded-md bg-accent-primary/15 border border-accent-primary/20 flex items-center justify-center shrink-0">
+            <FileCode2 className="size-3 text-accent-primary" />
           </div>
           <span className="text-xs font-medium text-foreground/90 truncate" title={filePath}>
             {fileName}

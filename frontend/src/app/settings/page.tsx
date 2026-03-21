@@ -79,7 +79,7 @@ export default function SettingsPage() {
 
   if (loading) return (
     <div className="p-8 text-center">
-      <div className="inline-block size-5 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      <div className="inline-block size-5 border-2 border-accent-primary border-t-transparent rounded-full animate-spin" />
     </div>
   );
 
@@ -99,7 +99,7 @@ export default function SettingsPage() {
               value={workspaceName}
               onChange={(e) => setWorkspaceName(e.target.value)}
               placeholder="My Awesome Project"
-              className="rounded-xl bg-muted/50 border-border focus-visible:ring-indigo-500/50"
+              className="rounded-xl bg-muted/50 border-border focus-visible:ring-accent-primary/50"
             />
           </div>
           <div className="space-y-2">
@@ -108,13 +108,13 @@ export default function SettingsPage() {
               value={defaultBranch}
               onChange={(e) => setDefaultBranch(e.target.value)}
               placeholder="main"
-              className="rounded-xl bg-muted/50 border-border focus-visible:ring-indigo-500/50"
+              className="rounded-xl bg-muted/50 border-border focus-visible:ring-accent-primary/50"
             />
           </div>
           <Button
             onClick={handleUpdate}
             disabled={saving}
-            className="rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 border-0 shadow-lg shadow-indigo-500/20"
+            className="rounded-xl bg-gradient-to-r from-accent-primary to-accent-secondary border-0 shadow-lg shadow-accent-glow/20"
           >
             {saving ? "Saving..." : "Save Changes"}
           </Button>

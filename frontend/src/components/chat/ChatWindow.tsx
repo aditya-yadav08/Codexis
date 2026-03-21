@@ -96,14 +96,14 @@ export default function ChatWindow({
   };
 
   return (
-    <div className="h-full min-h-0 flex flex-col rounded-2xl border border-white/8 bg-white/3 overflow-hidden">
+    <div className="h-full min-h-0 flex flex-col rounded-2xl border border-black/10 dark:border-white/8 bg-black/5 dark:bg-white/3 overflow-hidden">
       {/* Messages */}
       <ScrollArea className="flex-1 min-h-0">
         <div className="max-w-3xl mx-auto w-full px-4 md:px-6 py-8 space-y-6">
           {/* Empty state */}
           {messages.length === 0 && (
             <div className="flex flex-col items-center gap-6 pt-12 pb-6 animate-fade-up">
-              <div className="size-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-xl shadow-indigo-500/30">
+              <div className="size-16 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-xl shadow-accent-glow/30">
                 <Sparkles className="size-8 text-white" />
               </div>
               <div className="text-center space-y-2">
@@ -112,7 +112,7 @@ export default function ChatWindow({
                 </h2>
                 <p className="text-sm text-muted-foreground max-w-xs">
                   Connect a repository and start a conversation. Use{" "}
-                  <kbd className="px-1.5 py-0.5 rounded-md border border-white/10 bg-white/6 text-xs font-mono">
+                  <kbd className="px-1.5 py-0.5 rounded-md border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/6 text-xs font-mono">
                     Shift+Enter
                   </kbd>{" "}
                   for a new line.
@@ -125,9 +125,9 @@ export default function ChatWindow({
                   <button
                     key={text}
                     onClick={() => askQuestion(text)}
-                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-white/10 bg-white/4 hover:bg-white/8 hover:border-indigo-500/30 text-sm text-muted-foreground hover:text-foreground transition-all"
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/4 hover:bg-black/10 dark:hover:bg-white/8 hover:border-accent-primary/30 text-sm text-muted-foreground hover:text-foreground transition-all"
                   >
-                    <Icon className="size-3.5 text-indigo-400" />
+                    <Icon className="size-3.5 text-accent-primary" />
                     {text}
                   </button>
                 ))}
@@ -147,10 +147,10 @@ export default function ChatWindow({
           {/* Typing indicator */}
           {loading && (
             <div className="flex gap-3">
-              <div className="size-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow shrink-0">
+              <div className="size-8 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow shrink-0">
                 <Sparkles className="size-3.5 text-white" />
               </div>
-              <div className="rounded-2xl border border-white/8 bg-card px-4 py-3 flex items-center gap-1.5">
+              <div className="rounded-2xl border border-black/10 dark:border-white/8 bg-card px-4 py-3 flex items-center gap-1.5">
                 {[0, 1, 2].map((i) => (
                   <span
                     key={i}
@@ -169,7 +169,7 @@ export default function ChatWindow({
       </ScrollArea>
 
       {/* Composer */}
-      <div className="shrink-0 border-t border-white/8 bg-background/50 backdrop-blur-sm">
+      <div className="shrink-0 border-t border-black/10 dark:border-white/8 bg-background/50 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto w-full px-4 md:px-6 py-4 flex items-end gap-3">
           <Textarea
             value={question}
@@ -177,8 +177,8 @@ export default function ChatWindow({
             onKeyDown={handleKeyDown}
             placeholder="Ask about this repository…"
             className={cn(
-              "min-h-[44px] max-h-[180px] resize-none rounded-xl bg-white/6 border-white/10 text-sm",
-              "placeholder:text-muted-foreground/50 focus-visible:ring-indigo-500/50 focus-visible:border-indigo-500/40",
+              "min-h-[44px] max-h-[180px] resize-none rounded-xl bg-black/5 dark:bg-white/6 border-black/10 dark:border-white/10 text-sm",
+              "placeholder:text-muted-foreground/50 focus-visible:ring-accent-primary/50 focus-visible:border-accent-primary/40",
               "transition-all",
             )}
           />
@@ -190,7 +190,7 @@ export default function ChatWindow({
             className={cn(
               "size-11 shrink-0 rounded-xl transition-all",
               canSend
-                ? "bg-gradient-to-br from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 shadow-lg shadow-indigo-500/25 glow-indigo"
+                ? "bg-gradient-to-br from-accent-primary to-accent-secondary hover:from-accent-primary/80 hover:to-accent-secondary/80 shadow-lg shadow-accent-glow/25 glow-accent"
                 : "bg-white/8 text-muted-foreground",
             )}
             title="Send"

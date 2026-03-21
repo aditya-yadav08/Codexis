@@ -26,45 +26,45 @@ export function UsageChart({ data }: UsageChartProps) {
         >
           <defs>
             <linearGradient id="usageGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+              <stop offset="5%" stopColor="var(--theme-primary)" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="var(--theme-primary)" stopOpacity={0} />
             </linearGradient>
           </defs>
           <CartesianGrid
             strokeDasharray="3 3"
             vertical={false}
-            stroke="rgba(255, 255, 255, 0.05)"
+            stroke="var(--chart-grid)"
           />
           <XAxis
             dataKey="date"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "rgba(255, 255, 255, 0.4)", fontSize: 10 }}
+            tick={{ fill: "var(--chart-text)", fontSize: 10 }}
             dy={10}
           />
           <YAxis
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "rgba(255, 255, 255, 0.4)", fontSize: 10 }}
+            tick={{ fill: "var(--chart-text)", fontSize: 10 }}
             allowDecimals={false}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: "rgba(15, 15, 25, 0.9)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
+              backgroundColor: "var(--chart-tooltip-bg)",
+              border: "1px solid var(--chart-tooltip-border)",
               borderRadius: "12px",
               fontSize: "12px",
-              color: "#fff",
+              color: "var(--chart-tooltip-text)",
               backdropFilter: "blur(8px)",
               boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.5)",
             }}
-            itemStyle={{ color: "#818cf8" }}
-            cursor={{ stroke: "rgba(99, 102, 241, 0.2)", strokeWidth: 2 }}
+            itemStyle={{ color: "var(--theme-primary)" }}
+            cursor={{ stroke: "var(--theme-primary)", strokeOpacity: 0.2, strokeWidth: 2 }}
           />
           <Area
             type="monotone"
             dataKey="count"
-            stroke="#6366f1"
+            stroke="var(--theme-primary)"
             strokeWidth={3}
             fillOpacity={1}
             fill="url(#usageGradient)"

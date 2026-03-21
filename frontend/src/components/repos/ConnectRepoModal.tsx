@@ -263,9 +263,9 @@ export default function ConnectRepoModal({
             <div className="space-y-1">
               <DialogTitle className="text-xl font-bold tracking-tight flex items-center gap-2">
                 {isIndexing ? (
-                  <Loader2 className="size-5 text-indigo-400 animate-spin" />
+                  <Loader2 className="size-5 text-accent-primary animate-spin" />
                 ) : (
-                  <Github className="size-5 text-indigo-400" />
+                  <Github className="size-5 text-accent-primary" />
                 )}
                 {isIndexing ? "Indexing Repository..." : "Connect Repository"}
               </DialogTitle>
@@ -280,7 +280,7 @@ export default function ConnectRepoModal({
                 variant="ghost"
                 size="sm"
                 onClick={fetchGitHubRepos}
-                className="text-xs cursor-pointer text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10"
+                className="text-xs cursor-pointer text-accent-primary hover:text-accent-primary/80 hover:bg-accent-primary/10"
               >
                 Refresh
               </Button>
@@ -291,11 +291,11 @@ export default function ConnectRepoModal({
         {isIndexing ? (
           <div className="flex flex-col items-center justify-center py-20 px-10 text-center gap-6 animate-in fade-in zoom-in-95 duration-500">
             <div className="relative">
-              <div className="size-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center animate-pulse">
-                <Database className="size-10 text-indigo-400" />
+              <div className="size-20 rounded-3xl bg-accent-primary/10 border border-accent-primary/20 flex items-center justify-center animate-pulse">
+                <Database className="size-10 text-accent-primary" />
               </div>
-              <div className="absolute -bottom-2 -right-2 size-8 rounded-full bg-zinc-900 border border-indigo-500/30 flex items-center justify-center shadow-xl">
-                <Loader2 className="size-4 text-indigo-400 animate-spin" />
+              <div className="absolute -bottom-2 -right-2 size-8 rounded-full bg-zinc-900 border border-accent-primary/30 flex items-center justify-center shadow-xl">
+                <Loader2 className="size-4 text-accent-primary animate-spin" />
               </div>
             </div>
 
@@ -314,7 +314,7 @@ export default function ConnectRepoModal({
                 <>
                   <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
                     <div 
-                      className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-all duration-500 ease-out" 
+                      className="h-full bg-gradient-to-r from-accent-primary to-accent-secondary transition-all duration-500 ease-out" 
                       style={{ width: `${Math.min(100, (indexingProgress.processed / indexingProgress.total) * 100)}%` }}
                     />
                   </div>
@@ -322,7 +322,7 @@ export default function ConnectRepoModal({
                     <span className="text-muted-foreground/60">
                       Processing {indexingProgress.processed} / {indexingProgress.total} files
                     </span>
-                    <span className="text-indigo-400">
+                    <span className="text-accent-primary">
                       {Math.round((indexingProgress.processed / indexingProgress.total) * 100)}%
                     </span>
                   </div>
@@ -330,7 +330,7 @@ export default function ConnectRepoModal({
               ) : (
                 <>
                   <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-indigo-500 animate-[shimmer_2s_infinite] w-full" />
+                    <div className="h-full bg-accent-primary animate-[shimmer_2s_infinite] w-full" />
                   </div>
                   <div className="flex items-center justify-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
                     Preparing indexing pipeline...
@@ -364,7 +364,7 @@ export default function ConnectRepoModal({
                   placeholder="Search your GitHub repositories..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 h-10 rounded-xl bg-black/40 border-white/10 focus-visible:ring-indigo-500/50"
+                  className="pl-10 h-10 rounded-xl bg-black/40 border-white/10 focus-visible:ring-accent-primary/50"
                   disabled={!!errorMsg && !repos.length}
                 />
               </div>
@@ -381,7 +381,7 @@ export default function ConnectRepoModal({
                     onClick={() => setShowOnlyMyRepos(!showOnlyMyRepos)}
                     className={cn(
                       "w-8 h-4.5 rounded-full transition-colors relative cursor-pointer",
-                      showOnlyMyRepos ? "bg-indigo-500" : "bg-white/10"
+                      showOnlyMyRepos ? "bg-accent-primary" : "bg-white/10"
                     )}
                   >
                     <div className={cn(
@@ -397,7 +397,7 @@ export default function ConnectRepoModal({
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar max-h-[50vh]">
               {fetchingRepos ? (
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
-                  <Loader2 className="size-8 text-indigo-500 animate-spin" />
+                  <Loader2 className="size-8 text-accent-primary animate-spin" />
                   <p className="text-sm text-muted-foreground animate-pulse">
                     Fetching your repositories...
                   </p>
@@ -414,11 +414,11 @@ export default function ConnectRepoModal({
                         className={cn(
                           "group w-full cursor-pointer text-left p-4 rounded-2xl border border-white/5 bg-white/2 hover:bg-white/5 hover:border-white/15 transition-all duration-200 flex items-center gap-4 relative overflow-hidden",
                           loadingRepo === repo.id &&
-                            "bg-indigo-500/5 border-indigo-500/20",
+                            "bg-accent-primary/5 border-accent-primary/20",
                         )}
                       >
-                        <div className="size-10 rounded-xl bg-gradient-to-br from-indigo-500/10 to-violet-500/10 border border-white/10 flex items-center justify-center shrink-0 group-hover:from-indigo-500/20 group-hover:to-violet-500/20">
-                          <GitBranch className="size-5 text-indigo-400 group-hover:scale-110 transition-transform" />
+                        <div className="size-10 rounded-xl bg-gradient-to-br from-accent-primary/10 to-accent-secondary/10 border border-white/10 flex items-center justify-center shrink-0 group-hover:from-accent-primary/20 group-hover:to-accent-secondary/20">
+                          <GitBranch className="size-5 text-accent-primary group-hover:scale-110 transition-transform" />
                         </div>
 
                         <div className="flex-1 min-w-0">
@@ -427,7 +427,7 @@ export default function ConnectRepoModal({
                               {repo.name}
                             </span>
                             {loadingRepo === repo.id ? (
-                              <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full ring-1 ring-indigo-500/20">
+                              <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-accent-primary bg-accent-primary/10 px-2 py-0.5 rounded-full ring-1 ring-accent-primary/20">
                                 <Loader2 className="size-2.5 animate-spin" />
                                 Connecting
                               </span>
@@ -436,7 +436,7 @@ export default function ConnectRepoModal({
                                 Owner
                               </span>
                             ) : (
-                              <span className="text-[9px] font-bold uppercase tracking-wider text-indigo-400/80 bg-indigo-500/5 px-2 py-0.5 rounded-md border border-indigo-500/10">
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-accent-primary/80 bg-accent-primary/5 px-2 py-0.5 rounded-md border border-accent-primary/10">
                                 Collaborator
                               </span>
                             )}
@@ -447,7 +447,7 @@ export default function ConnectRepoModal({
                         </div>
 
                         <div className="opacity-0 group-hover:opacity-100 transition-opacity pr-2">
-                          <Plus className="size-4 cursor-pointer text-indigo-400" />
+                          <Plus className="size-4 cursor-pointer text-accent-primary" />
                         </div>
 
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />

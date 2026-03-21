@@ -14,7 +14,7 @@ export default function MessageBubble({
   if (message.role === "user") {
     return (
       <div className="flex justify-end animate-fade-up">
-        <div className="max-w-[78%] rounded-2xl rounded-br-sm bg-gradient-to-br from-indigo-500 to-violet-600 text-white px-4 py-3 text-sm leading-relaxed shadow-md shadow-indigo-500/20">
+        <div className="max-w-[78%] rounded-2xl rounded-br-sm bg-gradient-to-br from-accent-primary to-accent-secondary text-white px-4 py-3 text-sm leading-relaxed shadow-md shadow-accent-glow/20">
           {message.content}
         </div>
       </div>
@@ -24,7 +24,7 @@ export default function MessageBubble({
   return (
     <div className={cn("flex gap-3 animate-fade-up", isLatest && "")}>
       {/* AI avatar */}
-      <div className="size-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow shrink-0 mt-0.5">
+      <div className="size-8 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow shrink-0 mt-0.5">
         <Sparkles className="size-3.5 text-white" />
       </div>
 
@@ -33,7 +33,7 @@ export default function MessageBubble({
         <div
           className={cn(
             "rounded-2xl rounded-tl-sm border bg-card px-5 py-5",
-            isLatest ? "border-indigo-500/20" : "border-white/8"
+            isLatest ? "border-accent-primary/20" : "border-black/10 dark:border-white/8"
           )}
         >
           <ReactMarkdown
@@ -57,7 +57,7 @@ export default function MessageBubble({
               // ── Headings ───────────────────────────────────────────────
               h1({ children }) {
                 return (
-                  <h1 className="text-xl font-bold mt-7 mb-3 text-foreground tracking-tight border-b border-white/8 pb-2">
+                  <h1 className="text-xl font-bold mt-7 mb-3 text-foreground tracking-tight border-b border-black/10 dark:border-white/8 pb-2">
                     {children}
                   </h1>
                 );
@@ -89,7 +89,7 @@ export default function MessageBubble({
                 const isInline = !className;
                 if (isInline) {
                   return (
-                    <code className="inline-flex items-center px-[6px] py-[2px] mx-[2px] rounded-md font-mono text-[13px] font-medium bg-[#3f3f46] border border-white/10 text-white leading-5 align-middle shadow-sm">
+                    <code className="inline-flex items-center px-[6px] py-[2px] mx-[2px] rounded-md font-mono text-[13px] font-medium bg-zinc-200 dark:bg-[#3f3f46] border border-black/10 dark:border-white/10 text-zinc-900 dark:text-white leading-5 align-middle shadow-sm">
                       {children}
                     </code>
                   );
@@ -100,7 +100,7 @@ export default function MessageBubble({
               // ── Code block ─────────────────────────────────────────────
               pre({ children }) {
                 return (
-                  <pre className="rounded-xl border border-white/10 bg-[oklch(0.12_0.015_265)] px-4 py-4 overflow-x-auto text-[13px] my-5 leading-relaxed">
+                  <pre className="rounded-xl border border-black/10 dark:border-white/10 bg-zinc-50 dark:bg-[oklch(0.12_0.015_265)] px-4 py-4 overflow-x-auto text-[13px] my-5 leading-relaxed">
                     {children}
                   </pre>
                 );
@@ -109,14 +109,14 @@ export default function MessageBubble({
               // ── Lists ──────────────────────────────────────────────────
               ul({ children }) {
                 return (
-                  <ul className="mb-4 space-y-1.5 pl-5 text-[15px] text-foreground/85 list-disc marker:text-indigo-400">
+                  <ul className="mb-4 space-y-1.5 pl-5 text-[15px] text-foreground/85 list-disc marker:text-accent-primary">
                     {children}
                   </ul>
                 );
               },
               ol({ children }) {
                 return (
-                  <ol className="mb-4 space-y-1.5 pl-5 text-[15px] text-foreground/85 list-decimal marker:text-indigo-400 marker:font-semibold">
+                  <ol className="mb-4 space-y-1.5 pl-5 text-[15px] text-foreground/85 list-decimal marker:text-accent-primary marker:font-semibold">
                     {children}
                   </ol>
                 );
@@ -132,7 +132,7 @@ export default function MessageBubble({
               // ── Blockquote ─────────────────────────────────────────────
               blockquote({ children }) {
                 return (
-                  <blockquote className="border-l-2 border-indigo-500/60 pl-4 my-4 text-foreground/70 italic text-[14px]">
+                  <blockquote className="border-l-2 border-accent-primary/60 pl-4 my-4 text-foreground/70 italic text-[14px]">
                     {children}
                   </blockquote>
                 );
@@ -140,7 +140,7 @@ export default function MessageBubble({
 
               // ── Horizontal rule ────────────────────────────────────────
               hr() {
-                return <hr className="my-5 border-white/10" />;
+                return <hr className="my-5 border-black/10 dark:border-white/10" />;
               },
 
               // ── Strong / Em ────────────────────────────────────────────
@@ -166,8 +166,8 @@ export default function MessageBubble({
         {message.sources && message.sources.length > 0 && (
           <div className="space-y-2.5">
             <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-              <div className="size-4 rounded-md bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center">
-                <span className="text-[9px] text-indigo-400 font-bold">#</span>
+              <div className="size-4 rounded-md bg-accent-primary/15 border border-accent-primary/20 flex items-center justify-center">
+                <span className="text-[9px] text-accent-primary font-bold">#</span>
               </div>
               Sources
             </div>

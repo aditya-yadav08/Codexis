@@ -34,8 +34,7 @@ const tiers = [
     ],
     buttonText: "Upgrade to Pro",
     popular: true,
-    icon: Zap,
-    iconColor: "text-indigo-400",
+    iconColor: "text-accent-primary",
   },
   {
     name: "Business",
@@ -51,7 +50,7 @@ const tiers = [
     ],
     buttonText: "Contact Sales",
     icon: Sparkles,
-    iconColor: "text-violet-400",
+    iconColor: "text-accent-secondary",
   },
 ];
 
@@ -71,9 +70,8 @@ export default function BillingPage() {
         </p>
       </div>
 
-      {/* Current Plan Banner */}
-      <Card className="border-border bg-gradient-to-r from-indigo-500/8 via-card/50 to-violet-500/8 overflow-hidden relative">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
+      <Card className="border-border bg-gradient-to-r from-accent-primary/8 via-card/50 to-accent-secondary/8 overflow-hidden relative">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-primary/40 to-transparent" />
         <CardContent className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
@@ -97,7 +95,7 @@ export default function BillingPage() {
             >
               Manage Payment
             </Button>
-            <Button className="rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 border-0 shadow-lg shadow-indigo-500/20 hover:from-indigo-400 hover:to-violet-500 gap-1.5">
+            <Button className="rounded-xl bg-gradient-to-r from-accent-primary to-accent-secondary border-0 shadow-lg shadow-accent-glow/20 hover:from-accent-primary/80 hover:to-accent-secondary/80 gap-1.5">
               Upgrade Now
               <ArrowRight className="size-3.5" />
             </Button>
@@ -119,7 +117,7 @@ export default function BillingPage() {
                 {/* Popular badge — positioned OUTSIDE the card above it */}
                 {tier.popular && (
                   <div className="absolute -top-3.5 left-0 right-0 flex justify-center z-10">
-                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-lg shadow-indigo-500/30">
+                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-accent-primary to-accent-secondary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-lg shadow-accent-glow/30">
                       <Zap className="size-2.5" />
                       Most Popular
                     </span>
@@ -130,7 +128,7 @@ export default function BillingPage() {
                   className={cn(
                     "flex flex-col w-full transition-all duration-300",
                     tier.popular
-                      ? "border-indigo-500/50 bg-gradient-to-b from-indigo-500/5 to-card/50 shadow-xl shadow-indigo-500/10 ring-1 ring-indigo-500/30 mt-2"
+                      ? "border-accent-primary/50 bg-gradient-to-b from-accent-primary/5 to-card/50 shadow-xl shadow-accent-glow/10 ring-1 ring-accent-primary/30 mt-2"
                       : "border-border bg-card/50 hover:border-border/70 hover:shadow-md"
                   )}
                 >
@@ -166,14 +164,14 @@ export default function BillingPage() {
                             className={cn(
                               "mt-0.5 size-4 rounded-full flex items-center justify-center shrink-0",
                               tier.popular
-                                ? "bg-indigo-500/15 ring-1 ring-indigo-500/30"
+                                ? "bg-accent-primary/15 ring-1 ring-accent-primary/30"
                                 : "bg-muted"
                             )}
                           >
                             <Check
                               className={cn(
                                 "size-2.5",
-                                tier.popular ? "text-indigo-400" : "text-muted-foreground"
+                                tier.popular ? "text-accent-primary" : "text-muted-foreground"
                               )}
                               strokeWidth={3}
                             />
@@ -192,8 +190,8 @@ export default function BillingPage() {
                         tier.current
                           ? "border-border bg-muted text-muted-foreground cursor-default"
                           : tier.popular
-                          ? "bg-gradient-to-r from-indigo-500 to-violet-600 border-0 text-white shadow-lg shadow-indigo-500/25 hover:from-indigo-400 hover:to-violet-500"
-                          : "bg-gradient-to-r from-violet-600 to-purple-700 border-0 text-white shadow-lg shadow-violet-500/25 hover:from-violet-500 hover:to-purple-600"
+                          ? "bg-gradient-to-r from-accent-primary to-accent-secondary border-0 text-white shadow-lg shadow-accent-glow/25 hover:from-accent-primary/80 hover:to-accent-secondary/80"
+                          : "bg-gradient-to-r from-accent-secondary to-purple-700 border-0 text-white shadow-lg shadow-accent-glow/20 hover:from-accent-secondary/80 hover:to-purple-600"
                       )}
                       variant={tier.current ? "outline" : "default"}
                       disabled={tier.current}

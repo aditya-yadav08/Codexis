@@ -135,7 +135,7 @@ export default function ProfileSettingsPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4 pb-4">
-            <div className="size-16 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-xl font-bold text-white shadow-xl shadow-indigo-500/20 overflow-hidden">
+            <div className="size-16 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center text-xl font-bold text-white shadow-xl shadow-accent-glow/20 overflow-hidden">
               {avatar ? (
                 <img src={avatar} alt={fullName} className="size-full object-cover" />
               ) : (
@@ -172,7 +172,7 @@ export default function ProfileSettingsPage() {
             <Input 
                value={fullName}
                onChange={(e) => setFullName(e.target.value)}
-               className="rounded-xl bg-white/5 border-white/10 focus-visible:ring-indigo-500/50"
+               className="rounded-xl bg-white/5 border-white/10 focus-visible:ring-accent-primary/50"
             />
           </div>
           
@@ -191,14 +191,14 @@ export default function ProfileSettingsPage() {
                value={bio}
                onChange={(e) => setBio(e.target.value)}
                placeholder="Tell us about yourself..." 
-               className="rounded-xl bg-white/5 border-white/10 focus-visible:ring-indigo-500/50 min-h-[100px]"
+               className="rounded-xl bg-white/5 border-white/10 focus-visible:ring-accent-primary/50 min-h-[100px]"
             />
           </div>
 
           <Button 
             onClick={() => handleUpdate()}
             disabled={saving}
-            className="rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 border-0 shadow-lg shadow-indigo-500/20"
+            className="rounded-xl bg-gradient-to-r from-accent-primary to-accent-secondary border-0 shadow-lg shadow-accent-glow/20"
           >
             {saving ? "Saving..." : "Update Profile"}
           </Button>

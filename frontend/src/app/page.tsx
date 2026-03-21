@@ -79,8 +79,8 @@ function ActivityItem({
   const getStatusColor = (s: string) => {
     switch (s) {
       case "completed": return "bg-emerald-500";
-      case "indexing": return "bg-indigo-400 animate-pulse";
-      case "failed": return "bg-rose-500";
+      case "indexing": return "bg-accent-primary/80 animate-pulse";
+      case "error": return "bg-destructive";
       default: return "bg-amber-400";
     }
   };
@@ -151,8 +151,8 @@ export default function Home() {
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="size-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
-              <Zap className="size-3.5 text-white" strokeWidth={2.5} />
+            <div className="size-7 rounded-lg bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-lg shadow-accent-glow/25">
+              <Activity className="size-3.5 text-white" strokeWidth={2.5} />
             </div>
             <h1 className="text-xl font-bold tracking-tight">Overview</h1>
           </div>
@@ -171,9 +171,9 @@ export default function Home() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard title="Indexed Repos" value={stats.repos} subtext="Successfully indexed" icon={GitBranch} gradient="bg-gradient-to-br from-indigo-500 to-indigo-600" />
-        <StatCard title="Indexed files" value={stats.files} subtext="Available to chat" icon={Database} gradient="bg-gradient-to-br from-violet-500 to-violet-600" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-up" style={{ animationDelay: "100ms" }}>
+        <StatCard title="Indexed Repos" value={stats.repos} subtext="Successfully indexed" icon={GitBranch} gradient="bg-gradient-to-br from-accent-primary to-accent-secondary" />
+        <StatCard title="Indexed files" value={stats.files} subtext="Available to chat" icon={Database} gradient="bg-gradient-to-br from-sky-500 to-blue-600" />
         <StatCard title="Questions" value={stats.questions} subtext="Asked in last 7 days" icon={MessageSquare} gradient="bg-gradient-to-br from-emerald-500 to-teal-600" />
         <StatCard title="Response time" value={stats.responseTime} subtext="Average (p50)" icon={Activity} gradient="bg-gradient-to-br from-amber-500 to-orange-600" />
       </div>
@@ -217,7 +217,9 @@ export default function Home() {
           <CardContent className="space-y-2">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-10 gap-2 opacity-50">
-                <Loader2 className="size-5 animate-spin text-indigo-400" />
+                <div className="p-8 text-center text-muted-foreground flex items-center justify-center">
+                  <Loader2 className="size-5 animate-spin text-accent-primary" />
+                </div>
                 <span className="text-xs">Loading activity...</span>
               </div>
             ) : activities.length > 0 ? (

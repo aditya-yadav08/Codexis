@@ -21,7 +21,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
       {/* Header */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <div className="size-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+          <div className="size-7 rounded-lg bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center shadow-lg shadow-accent-glow/25">
             <SettingsIcon className="size-3.5 text-white" />
           </div>
           <h1 className="text-xl font-bold tracking-tight">Settings</h1>
@@ -47,7 +47,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
               >
                 <item.icon className={cn(
                   "size-4 shrink-0",
-                  pathname === item.href ? "text-indigo-400" : "text-muted-foreground"
+                  pathname === item.href ? "text-accent-primary" : "text-muted-foreground"
                 )} />
                 <span>{item.title}</span>
               </Link>

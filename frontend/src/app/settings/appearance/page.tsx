@@ -115,7 +115,7 @@ export default function AppearanceSettingsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-3">
-        <RefreshCw className="size-7 animate-spin text-indigo-400/60" />
+        <RefreshCw className="size-7 animate-spin text-accent-primary/60" />
         <p className="text-sm text-muted-foreground">Loading preferences…</p>
       </div>
     );
@@ -127,8 +127,8 @@ export default function AppearanceSettingsPage() {
       <Card className="border-border bg-card/50">
         <CardHeader className="pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-              <Palette className="size-4 text-indigo-400" />
+            <div className="size-8 rounded-lg bg-accent-primary/10 flex items-center justify-center">
+              <Palette className="size-4 text-accent-primary" />
             </div>
             <div>
               <CardTitle className="text-sm font-semibold">Theme Preference</CardTitle>
@@ -153,7 +153,7 @@ export default function AppearanceSettingsPage() {
                   className={cn(
                     "group relative flex flex-col items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-200 text-center focus-visible:outline-none",
                     active
-                      ? "border-indigo-500 shadow-lg shadow-indigo-500/20 bg-indigo-500/5"
+                      ? "border-accent-primary shadow-lg shadow-accent-glow/20 bg-accent-primary/5"
                       : "border-border bg-muted/30 hover:border-border hover:bg-muted/50",
                     saving && "opacity-50 cursor-not-allowed"
                   )}
@@ -175,7 +175,7 @@ export default function AppearanceSettingsPage() {
                     </div>
                     {/* Active checkmark */}
                     {active && (
-                      <div className="absolute top-1.5 right-1.5 size-4 rounded-full bg-indigo-500 flex items-center justify-center">
+                      <div className="absolute top-1.5 right-1.5 size-4 rounded-full bg-accent-primary flex items-center justify-center">
                         <Check className="size-2.5 text-white" strokeWidth={3} />
                       </div>
                     )}
@@ -185,7 +185,7 @@ export default function AppearanceSettingsPage() {
                   <div className="flex flex-col items-center gap-1">
                     <themeItem.icon className={cn(
                       "size-4 transition-colors",
-                      active ? "text-indigo-400" : "text-muted-foreground group-hover:text-foreground"
+                      active ? "text-accent-primary" : "text-muted-foreground group-hover:text-foreground"
                     )} />
                     <p className={cn(
                       "text-xs font-semibold leading-none",

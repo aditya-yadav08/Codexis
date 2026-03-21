@@ -21,7 +21,7 @@ export default function SecuritySettingsPage() {
       <Card className="border-border bg-card/50">
         <CardHeader>
           <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <Github className="size-4 text-indigo-400" />
+            <Github className="size-4 text-accent-primary" />
             Connected Accounts
           </CardTitle>
           <CardDescription>
@@ -45,7 +45,7 @@ export default function SecuritySettingsPage() {
               href="https://github.com/settings/applications"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 transition-colors font-medium"
+              className="flex items-center gap-1.5 text-xs text-accent-primary hover:text-accent-primary/80 transition-colors font-medium"
             >
               Manage on GitHub
               <ExternalLink className="size-3" />
@@ -57,7 +57,7 @@ export default function SecuritySettingsPage() {
       <Card className="border-border bg-card/50 opacity-60">
         <CardHeader>
           <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <Fingerprint className="size-4 text-violet-400" />
+            <Fingerprint className="size-4 text-accent-secondary" />
             Two-Factor Authentication
           </CardTitle>
           <CardDescription>

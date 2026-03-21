@@ -30,7 +30,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (loading) {
     return (
       <div className="h-screen w-screen flex items-center justify-center bg-background">
-        <Loader2 className="size-8 animate-spin text-indigo-500" />
+        <Loader2 className="size-8 animate-spin text-accent-primary" />
       </div>
     );
   }

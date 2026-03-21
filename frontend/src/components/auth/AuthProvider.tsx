@@ -15,7 +15,7 @@ const AuthContext = createContext<AuthContextType>({ user: null, loading: true }
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { setUser: setZustandUser } = useStore();
+  const { setUser: setZustandUser, setTheme, setAccentColor } = useStore();
 
   useEffect(() => {
     // 1. Check current session
@@ -23,8 +23,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const u = session?.user ?? null;
       setUser(u);
       setZustandUser(u);
-      if (session?.provider_token) {
-        syncToken(session.provider_token);
+      if (session) {
+        if (session.provider_token) syncToken(session.provider_token);
+        syncSettings(session.access_token);
       }
       setLoading(false);
     });
@@ -35,8 +36,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const u = session?.user ?? null;
         setUser(u);
         setZustandUser(u);
-        if (session?.provider_token) {
-          syncToken(session.provider_token);
+        if (session) {
+          if (session.provider_token) syncToken(session.provider_token);
+          syncSettings(session.access_token);
         }
         setLoading(false);
       }
@@ -68,6 +70,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (err) {
       console.error("Failed to sync GitHub token:", err);
+    }
+  };
+
+  const syncSettings = async (token: string) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/settings`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.theme) setTheme(data.theme);
+        if (data.accent_color) setAccentColor(data.accent_color);
+      }
+    } catch (err) {
+      console.error("Failed to sync user settings on login:", err);
     }
   };
 

@@ -110,7 +110,7 @@ export default function AppSidebar({
                 "group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
                 collapsed ? "justify-center" : "",
                 active
-                  ? "bg-gradient-to-r from-indigo-500/20 to-violet-500/10 text-foreground ring-1 ring-indigo-500/30 shadow-sm"
+                  ? "bg-gradient-to-r from-accent-primary/20 to-accent-secondary/10 text-foreground ring-1 ring-accent-primary/30 shadow-sm"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent",
               )}
             >
@@ -118,13 +118,13 @@ export default function AppSidebar({
                 className={cn(
                   "size-4 shrink-0 transition-colors",
                   active
-                    ? "text-indigo-400"
+                    ? "text-accent-primary"
                     : "text-muted-foreground group-hover:text-foreground",
                 )}
               />
               {!collapsed && <span className="truncate">{item.label}</span>}
               {!collapsed && active && (
-                <span className="ml-auto size-1.5 rounded-full bg-indigo-400 shrink-0" />
+                <span className="ml-auto size-1.5 rounded-full bg-accent-primary shrink-0" />
               )}
             </Link>
           );

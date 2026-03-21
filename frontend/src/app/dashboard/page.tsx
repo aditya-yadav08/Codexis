@@ -103,7 +103,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <div className="size-7 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/25">
+            <div className="size-7 rounded-lg bg-gradient-to-br from-accent-secondary to-accent-primary flex items-center justify-center shadow-lg shadow-accent-glow/25">
               <FolderKanban className="size-3.5 text-white" />
             </div>
             <h1 className="text-xl font-bold tracking-tight">Repositories</h1>
@@ -113,7 +113,7 @@ export default function Dashboard() {
 
         <Button
           onClick={() => setOpenConnectModal(true)}
-          className="gap-1.5 h-9 px-4 cursor-pointer rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white border-0 hover:from-indigo-400 hover:to-violet-500 shadow-md shadow-indigo-500/20 text-sm font-semibold"
+          className="gap-1.5 h-9 px-4 cursor-pointer rounded-xl bg-gradient-to-r from-accent-primary to-accent-secondary text-white border-0 hover:from-accent-primary/80 hover:to-accent-secondary/80 shadow-md shadow-accent-glow/20 text-sm font-semibold"
         >
           <Plus className="size-3.5" />
           Connect Repo
@@ -147,8 +147,8 @@ export default function Dashboard() {
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="size-8 rounded-xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 border border-border flex items-center justify-center shrink-0">
-                    <GitBranch className="size-4 text-indigo-400" />
+                  <div className="size-8 rounded-xl bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 border border-border flex items-center justify-center shrink-0">
+                    <GitBranch className="size-4 text-accent-primary" />
                   </div>
                   <div className="min-w-0">
                     <h3 className="font-semibold text-sm text-foreground truncate">{repo.repo}</h3>
@@ -160,7 +160,7 @@ export default function Dashboard() {
                   <button
                     onClick={() => reindexRepo(repo)}
                     disabled={reindexingRepoId === repo.id}
-                    className="p-2 rounded-lg hover:bg-indigo-500/10 text-muted-foreground hover:text-indigo-400 transition-all cursor-pointer disabled:opacity-50"
+                    className="p-2 rounded-lg hover:bg-accent-primary/10 text-muted-foreground hover:text-accent-primary transition-all cursor-pointer disabled:opacity-50"
                     title="Re-index repository"
                   >
                     <RefreshCw className={cn("size-4", reindexingRepoId === repo.id && "animate-spin")} />
@@ -183,7 +183,7 @@ export default function Dashboard() {
                   size="sm"
                   variant="ghost"
                   onClick={() => router.push(`/chat?owner=${repo.owner}&repo=${repo.repo}`)}
-                  className="h-7 px-2.5 rounded-lg text-xs cursor-pointer text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10"
+                  className="h-7 px-2.5 rounded-lg text-xs cursor-pointer text-accent-primary hover:text-accent-primary/80 hover:bg-accent-primary/10"
                 >
                   Open chat →
                 </Button>
@@ -193,8 +193,8 @@ export default function Dashboard() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center gap-4 py-24 rounded-2xl border border-dashed border-border bg-muted/20">
-          <div className="size-14 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 border border-border flex items-center justify-center">
-            <FolderKanban className="size-6 text-indigo-400" />
+          <div className="size-14 rounded-2xl bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 border border-border flex items-center justify-center">
+            <FolderKanban className="size-6 text-accent-primary" />
           </div>
           <div className="text-center space-y-1">
             <p className="font-semibold text-foreground">No indexed repositories</p>
@@ -204,7 +204,7 @@ export default function Dashboard() {
           </div>
           <Button
             onClick={() => setOpenConnectModal(true)}
-            className="gap-1.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white border-0 hover:from-indigo-400 hover:to-violet-500 shadow-md shadow-indigo-500/20 text-sm font-semibold"
+            className="gap-1.5 rounded-xl bg-gradient-to-r from-accent-primary to-accent-secondary text-white border-0 hover:from-accent-primary/80 hover:to-accent-secondary/80 shadow-md shadow-accent-glow/20 text-sm font-semibold"
           >
             <Plus className="size-3.5" />
             Connect your first repo
